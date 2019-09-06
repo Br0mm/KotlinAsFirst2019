@@ -2,8 +2,8 @@
 
 package lesson3.task1
 
-import kotlin.math.max
-import kotlin.math.sqrt
+import lesson1.task1.sqr
+import kotlin.math.*
 
 /**
  * Пример
@@ -68,7 +68,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = if (n < 10) 1 else digitNumber(n / 10) + 1
+fun digitNumber(n: Int): Int = if (n == 0) 0 else digitNumber(n / 10) + 1
 
 /**
  * Простая
@@ -93,11 +93,16 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    val x = max(m, n)
-    for (i in x..((m * n) / 2)) {
-        if ((i % m == 0) && (i % n == 0)) return i
+    if (m == n) return m
+    val x = min(m, n)
+    var nod = 1
+    for (i in x downTo 2) {
+        if (n % i == 0 && m % i == 0) {
+            nod = i
+            break
+        }
     }
-    return m * n
+    return m * n / nod
 }
 
 /**
@@ -105,14 +110,24 @@ fun lcm(m: Int, n: Int): Int {
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
+        if (n % i == 0) return i
+    }
+    return n
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    for (i in n / 2 downTo sqrt(n.toDouble()).toInt()) {
+        if (n % i == 0) return i
+    }
+    return 1
+}
 
 /**
  * Простая
@@ -121,7 +136,14 @@ fun maxDivisor(n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    val x = min(m, n)
+    val y = max(m, n)
+    for (i in 2..x) {
+        if (x % i == 0 && y % i == 0) return false
+    }
+    return true
+}
 
 /**
  * Простая
@@ -130,7 +152,12 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    for (i in sqrt(m.toDouble()).toInt()..sqrt(n.toDouble()).toInt()) {
+        if (sqr(i) in m..n) return true
+    }
+    return false
+}
 
 /**
  * Средняя
@@ -148,7 +175,8 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int =
+    if (x < 2) 0 else if (x % 2 == 0) collatzSteps(x / 2) + 1 else collatzSteps(3 * x + 1) + 1
 
 /**
  * Средняя
@@ -159,7 +187,20 @@ fun collatzSteps(x: Int): Int = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var c = 0
+    var f = 5
+    val e = x - ((x / (2 * PI)).toInt() * 2 * PI)
+    var a = e
+    var k = sqr(e) * e / (2 * 3)
+    while (abs(k) >= eps) {
+        if (c % 2 == 0) a -= k else a += k
+        k *= sqr(e) / ((f - 1) * (f))
+        f += 2
+        c += 1
+    }
+    return a
+}
 
 /**
  * Средняя
@@ -170,7 +211,20 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    var c = 0
+    var f = 4
+    var a = 1.0
+    val e = x - ((x / (2 * PI)).toInt() * 2 * PI)
+    var k = sqr(e) / 2
+    while (abs(k) >= eps) {
+        if (c % 2 == 0) a -= k else a += k
+        k *= sqr(e) / ((f - 1) * (f))
+        f += 2
+        c += 1
+    }
+    return a
+}
 
 /**
  * Средняя
@@ -179,7 +233,15 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var a = n
+    var k = 0
+    while (a > 0) {
+        k = k * 10 + a % 10
+        a /= 10
+    }
+    return k
+}
 
 /**
  * Средняя
@@ -190,7 +252,15 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var a = n
+    var k = 0
+    while (a > 0) {
+        k = k * 10 + a % 10
+        a /= 10
+    }
+    return k == n
+}
 
 /**
  * Средняя
