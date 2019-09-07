@@ -279,7 +279,14 @@ fun isPalindrome(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var a = n / 10
+    while (a > 0) {
+        if (a % 10 != n % 10) return true
+        a /= 10
+    }
+    return false
+}
 
 /**
  * Сложная
@@ -290,7 +297,21 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var k = 10
+    var c = 1
+    var a = n
+    var m = 1
+    while (a > c) {
+        if (sqr(m) >= k) {
+            c += 1
+            k *= 10
+        }
+        m += 1
+        if (a > c) a -= c else break
+    }
+    return ((sqr(m) / 10.0.pow(c - a)) % 10).toInt()
+}
 
 /**
  * Сложная
@@ -301,4 +322,24 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var k = 10
+    var a = 0
+    var x = 1
+    var e = n
+    var c = 1
+    if (e < 3) return 1 else e -= 1
+    x += a
+    a = x - a
+    while (e > c) {
+        if (x >= k) {
+            c += 1
+            k *= 10
+        }
+        x += a
+        a = x - a
+        if (e > c) e -= c else break
+    }
+    return if (e == 0) ((x / 10.0.pow(e)) % 10).toInt() else ((x / 10.0.pow(c - e)) % 10).toInt()
+}
+
