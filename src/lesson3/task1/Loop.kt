@@ -304,11 +304,12 @@ fun squareSequenceDigit(n: Int): Int {
     var m = 1
     while (a > c) {
         if (sqr(m) >= k) {
-            c += 1
             k *= 10
+            c += 1
         }
+        a -= c
+        if (a == 0) return sqr(m) % 10
         m += 1
-        if (a > c) a -= c else break
     }
     return ((sqr(m) / 10.0.pow(c - a)) % 10).toInt()
 }
@@ -328,7 +329,7 @@ fun fibSequenceDigit(n: Int): Int {
     var x = 1
     var e = n
     var c = 1
-    if (e < 3) return 1 else e -= 1
+    if (e < 2) return 1 else e -= 1
     x += a
     a = x - a
     while (e > c) {
@@ -336,10 +337,11 @@ fun fibSequenceDigit(n: Int): Int {
             c += 1
             k *= 10
         }
+        e -= c
+        if (e == 0) return x % 10
         x += a
         a = x - a
-        if (e > c) e -= c else break
     }
-    return if (e == 0) ((x / 10.0.pow(e)) % 10).toInt() else ((x / 10.0.pow(c - e)) % 10).toInt()
+    return ((x / 10.0.pow(c - e)) % 10).toInt()
 }
 
