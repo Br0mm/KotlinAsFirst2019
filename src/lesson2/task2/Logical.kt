@@ -48,7 +48,8 @@ fun daysInMonth(month: Int, year: Int): Int {
     var days = 30
     days += if (month < 8) month % 2 else 1 - month % 2
     return if (month != 2) days else
-        if (year % 4 != 0 || ((year % 100 == 0) && (year % 400 != 0))) days - 2 else days - 1
+        if (year % 4 != 0 || ((year % 100 == 0) && (year % 400 != 0))) days - 2
+        else days - 1
 }
 
 /**
