@@ -145,13 +145,9 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var x = max(a, b)
-    val y = min(a, b)
-    val z: Double
-    if (x < c) {
-        z = x
-        x = c
-    } else z = c
+    val x = maxOf(a, b, c)
+    val y = minOf(a, b, c)
+    val z = a + b + c - x - y
     if (x > z + y) return -1
     if (sqr(x) == sqr(z) + sqr(y)) return 1
     if (sqr(x) > sqr(z) + sqr(y)) return 2

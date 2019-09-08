@@ -47,7 +47,8 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
 fun daysInMonth(month: Int, year: Int): Int {
     var days = 30
     days += if (month < 8) month % 2 else 1 - month % 2
-    return if (month != 2) days else if (year % 4 != 0 || ((year % 100 == 0) && (year != 2000))) days - 2 else days - 1
+    return if (month != 2) days else
+        if (year % 4 != 0 || ((year % 100 == 0) && (year % 400 != 0))) days - 2 else days - 1
 }
 
 /**
@@ -74,7 +75,6 @@ fun circleInside(
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     val x = max(a, b)
     val y = min(a, b)
-    val z: Int
-    z = if (x < c) x else c
+    val z = if (x < c) x else c
     return (z <= r && y <= s) || (z <= s && y <= r)
 }
