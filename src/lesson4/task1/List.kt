@@ -270,7 +270,20 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    val list = listOf(
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+    )
+    var a = n
+    var numbers = ("")
+    while (a >= base) {
+        numbers = if (a % base < 10) "${a % base}" + numbers else list[a % base - 10] + numbers
+        a /= base
+    }
+    numbers = if (a % base < 10) "${a % base}" + numbers else list[a % base - 10] + numbers
+    return numbers
+}
 
 /**
  * Средняя
@@ -279,7 +292,14 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    val k = base.toDouble()
+    var a = 0.0
+    for (i in 0 until digits.size) {
+        a += k.pow(digits.size - i - 1) * digits[i]
+    }
+    return a.toInt()
+}
 
 /**
  * Сложная
@@ -293,7 +313,19 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    val list = listOf(
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+    )
+    val k = base.toDouble()
+    var a = 0.0
+    for (i in 0 until str.length) {
+        a += k.pow(str.length - i - 1) * list.indexOf(str[i])
+    }
+    return a.toInt()
+}
 
 /**
  * Сложная
