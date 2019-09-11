@@ -271,17 +271,13 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    val list = listOf(
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-    )
     var a = n
     var numbers = ("")
     while (a >= base) {
-        numbers = if (a % base < 10) "${a % base}" + numbers else list[a % base - 10] + numbers
+        numbers = if (a % base < 10) "${a % base}" + numbers else (a % base + 87).toChar() + numbers
         a /= base
     }
-    numbers = if (a % base < 10) "${a % base}" + numbers else list[a % base - 10] + numbers
+    numbers = if (a % base < 10) "${a % base}" + numbers else (a % base + 87).toChar() + numbers
     return numbers
 }
 
@@ -314,15 +310,11 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val list = listOf(
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-    )
     val k = base.toDouble()
     var a = 0.0
     for (i in 0 until str.length) {
-        a += k.pow(str.length - i - 1) * list.indexOf(str[i])
+        a += if (str[i].toInt() < 58) k.pow(str.length - i - 1) * (str[i].toInt() - 48)
+        else k.pow(str.length - i - 1) * (str[i].toInt() - 87)
     }
     return a.toInt()
 }
@@ -340,21 +332,21 @@ fun roman(n: Int): String {
     var numbers = ("")
     for (i in 1..a / 1000) numbers += "M"
     a %= 1000
-    if (a / 100 > 5 && a / 100 != 9) numbers += "D"
+    if (a / 100 >= 5 && a / 100 != 9) numbers += "D"
     when {
         a / 100 == 9 -> numbers += "CM"
         a / 100 == 4 -> numbers += "CD"
         else -> for (i in 1..(a % 500) / 100) numbers += "C"
     }
     a %= 100
-    if (a / 10 > 5 && a / 10 != 9) numbers += "L"
+    if (a / 10 >= 5 && a / 10 != 9) numbers += "L"
     when {
         a / 10 == 9 -> numbers += "XC"
         a / 10 == 4 -> numbers += "XL"
         else -> for (i in 1..(a % 50) / 10) numbers += "X"
     }
     a %= 10
-    if (a > 5 && a != 9) numbers += "V"
+    if (a >= 5 && a != 9) numbers += "V"
     when (a) {
         9 -> numbers += "IX"
         4 -> numbers += "IV"
