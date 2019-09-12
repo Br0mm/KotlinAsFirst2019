@@ -102,14 +102,16 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    if (m == n) return m
-    val x = min(m, n)
     var nod = 1
-    for (i in x downTo 2) {
-        if (n % i == 0 && m % i == 0) {
-            nod = i
+    var k = m
+    var l = n
+    if (m == n) return m
+    while (l != 0 && k != 0) {
+        if (l % k == 0 || k % l == 0) {
+            nod = min(k, l)
             break
         }
+        if (l > k) l %= k else k %= l
     }
     return m * n / nod
 }
@@ -131,12 +133,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    for (i in 2..sqrt(n.toDouble()).toInt()) {
-        if (n % i == 0) return n / i
-    }
-    return 1
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -145,15 +142,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    if (m == 1 || n == 1) return true
-    val x = min(m, n)
-    val y = max(m, n)
-    for (i in 2..sqrt(x.toDouble()).toInt()) {
-        if (x % i == 0 && y % i == 0) return false
-    }
-    return y % x != 0
-}
+fun isCoPrime(m: Int, n: Int): Boolean = m * n / lcm(m, n) == 1
 
 /**
  * Простая
@@ -186,7 +175,11 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  * этого для какого-либо начального X > 0.
  */
 fun collatzSteps(x: Int): Int =
-    if (x < 2) 0 else if (x % 2 == 0) collatzSteps(x / 2) + 1 else collatzSteps(3 * x + 1) + 1
+    when {
+        x < 2 -> 0
+        x % 2 == 0 -> collatzSteps(x / 2) + 1
+        else -> collatzSteps(3 * x + 1) + 1
+    }
 
 /**
  * Средняя
@@ -197,21 +190,22 @@ fun collatzSteps(x: Int): Int =
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double {
-    var c = 0
-    var f = 5
-    val e = x - ((x / (2 * PI)).toInt() * 2 * PI)
-    var a = e
-    var k = sqr(e) * e / (2 * 3)
+fun subSinCos(x: Double, eps: Double, i: Int): Double {
+    var plus = 0
+    var factorial = 2 + i
+    val e = x - (floor((x / (2 * PI))) * 2 * PI)
+    var xPI = if (i == 1) e else 1.0
+    var k = e.pow(2 + i) / ((factorial - 1) * (factorial))
     while (abs(k) >= eps) {
-        if (c % 2 == 0) a -= k else a += k
-        k *= sqr(e) / ((f - 1) * (f))
-        f += 2
-        c += 1
+        factorial += 2
+        if (plus % 2 == 0) xPI -= k else xPI += k
+        k *= sqr(e) / ((factorial - 1) * (factorial))
+        plus += 1
     }
-    return a
+    return xPI
 }
 
+fun sin(x: Double, eps: Double): Double = subSinCos(x, eps, 1)
 /**
  * Средняя
  *
@@ -221,20 +215,7 @@ fun sin(x: Double, eps: Double): Double {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double {
-    var c = 0
-    var f = 4
-    var a = 1.0
-    val e = x - ((x / (2 * PI)).toInt() * 2 * PI)
-    var k = sqr(e) / 2
-    while (abs(k) >= eps) {
-        if (c % 2 == 0) a -= k else a += k
-        k *= sqr(e) / ((f - 1) * (f))
-        f += 2
-        c += 1
-    }
-    return a
-}
+fun cos(x: Double, eps: Double): Double = subSinCos(x, eps, 0)
 
 /**
  * Средняя
@@ -262,15 +243,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var a = n
-    var k = 0
-    while (a > 0) {
-        k = k * 10 + a % 10
-        a /= 10
-    }
-    return k == n
-}
+fun isPalindrome(n: Int): Boolean = revert(n) == n
 
 /**
  * Средняя
