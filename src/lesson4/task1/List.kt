@@ -363,8 +363,8 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun end(k: Int): String {
-    return when (k % 10) {
+fun end(k: Int): String { // Функция, определяющая название числа
+    return when (k) {
         0 -> ""
         1 -> " один"
         2 -> " два"
@@ -378,39 +378,47 @@ fun end(k: Int): String {
     }
 }
 
-fun teens(k: Int): String {
+fun teens(k: Int): String { // Функция, определяющая название от 10 до 19 или числа
     val l = "надцать"
     return when (k % 100) {
         10 -> "десять"
-        11 -> end(k) + l
-        12 -> end(k).substring(0, 3) + "е" + l
-        13 -> end(k) + l
-        14 -> end(k).substring(0, 6) + l
-        15 -> end(k).substring(0, 4) + l
-        16 -> end(k).substring(0, 5) + l
-        17 -> end(k).substring(0, 4) + l
-        18 -> end(k).substring(0, 6) + l
-        19 -> end(k).substring(0, 6) + l
-        else -> end(k)
+        11 -> end(k % 10) + l
+        12 -> end(k % 10).substring(0, 3) + "е" + l
+        13 -> end(k % 10) + l
+        14 -> end(k % 10).substring(0, 6) + l
+        15 -> end(k % 10).substring(0, 4) + l
+        16 -> end(k % 10).substring(0, 5) + l
+        17 -> end(k % 10).substring(0, 4) + l
+        18 -> end(k % 10).substring(0, 6) + l
+        19 -> end(k % 10).substring(0, 6) + l
+        else -> end(k % 10)
     }
 }
 
-fun dictionary1(number: Int, k: Int): String {
-    var l = ""
-    val dictionary = listOf("десят", "сот", " тысяч")
-    l = when {
-        number == 0 && k == 3 -> " тысяч"
+fun dictionary1(a: Int, k: Int): String { // Функция определяющая склонение разрядов числа
+    val number = a % 10
+    val dictionary = listOf("десят", "сот", " тысяч", " тысячи", "ста")
+    if (k == 0) return teens(a)
+    if (k == 3 && a in 10..19) return teens(a) + dictionary[2]
+    if (number == 3) when (k) { // Определение разрядов 3 (тридцать, триста, три тысячи)
+        1 -> return end(number) + "дцать"
+        2 -> return end(number) + dictionary[4]
+        3 -> return end(number) + " тысячи"
+    }
+    if (number == 2) when (k) { // Определение разрядов 2
+        1 -> return end(number) + "дцать"
+        2 -> return end(number).substring(0, 3) + "ести"
+        3 -> return end(number).substring(0, 3) + "е" + dictionary[3]
+    }
+    if (number == 4) when (k) { // Определение разрядов 4
+        1 -> return " сорок"
+        2 -> return end(number) + dictionary[4]
+        3 -> return end(number) + dictionary[3]
+    }
+    return when { // Определение разрядов оставшихся цифр
+        number == 0 && k == 3 -> dictionary[2]
         number == 1 && k == 2 -> " сто"
         number == 1 && k == 3 -> end(number).substring(0, 3) + "на тысяча"
-        number == 2 && k == 1 -> end(number) + "дцать"
-        number == 2 && k == 2 -> end(number).substring(0, 3) + "ести"
-        number == 2 && k == 3 -> end(number).substring(0, 3) + "е тысячи"
-        number == 3 && k == 1 -> end(number) + "дцать"
-        number == 3 && k == 2 -> end(number) + "ста"
-        number == 3 && k == 2 -> end(number) + " тысячи"
-        number == 4 && k == 1 -> " сорок"
-        number == 4 && k == 2 -> end(number) + "ста"
-        number == 4 && k == 2 -> end(number) + " тысячи"
         number == 5 -> end(number) + dictionary[k - 1]
         number == 6 -> end(number) + dictionary[k - 1]
         number == 7 -> end(number) + dictionary[k - 1]
@@ -419,35 +427,20 @@ fun dictionary1(number: Int, k: Int): String {
         number == 9 && k != 1 -> end(number) + dictionary[k - 1]
         else -> ""
     }
-    return l
 }
 
-fun russian(n: Int): String {
+fun russian(n: Int): String { // Функция переводящая число в строку
     var number = n
     var k = 0
     var line = ("")
-    var l = ("")
     while (number > 0) {
-        if (k == 0) {
-            l = teens(number)
+        line = dictionary1(number % 100, k) + line
+        if (k == 0 || k == 3) {
             if (number % 100 in 10..19) {
-                line = l
                 number /= 10
                 k = 1
-            }
+            } else if (k == 3) k = 0
         }
-        if (k != 0) l = dictionary1(number % 10, k)
-        if (k == 3) {
-            if (number % 100 in 10..19) {
-                l = teens(number) + " тысяч"
-                k = 1
-                number /= 10
-            } else {
-                l = dictionary1(number % 10, k)
-                k = 0
-            }
-        }
-        line = l + line
         k += 1
         number /= 10
     }
