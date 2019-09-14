@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import kotlin.math.floor
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -217,7 +218,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     var k = 2
     var a = n
-    val m = sqrt(a.toDouble()).toInt()
+    val m = floor(sqrt(a.toDouble())).toInt()
     val list = mutableListOf<Int>()
     while (a > 1) {
         if (a % k == 0) {
@@ -394,10 +395,25 @@ fun teens(k: Int): String {
     }
 }
 
+fun dictionary1(number: Int, k: Int): String {
+    var l = ""
+    val dictionary = listOf("десят", "сот", " тысяч")
+    l = when {
+
+        number == 5 -> end(number) + dictionary[k - 1]
+        number == 6 -> end(number) + dictionary[k - 1]
+        number == 7 -> end(number) + dictionary[k - 1]
+        number == 8 -> end(number) + dictionary[k - 1]
+        number == 9 -> end(number) + dictionary[k - 1]
+        else -> ""
+    }
+    return l
+}
+
 fun russian(n: Int): String {
     val dictionary = listOf(
-        "надцать", "дцать", "сорок", "десят", "сто", "сти",
-        "ста", "сот", " тысяча", " тысячи", " тысяч"
+        "надцать", "дцать", "сорок", "сто", "сти",
+        "ста", " тысяча", " тысячи", " тысяч"
     )
     var number = n
     var k = 0
@@ -417,46 +433,33 @@ fun russian(n: Int): String {
                 2 -> end(number) + dictionary[1]
                 3 -> end(number) + dictionary[1]
                 4 -> dictionary[2]
-                5 -> end(number) + dictionary[3]
-                6 -> end(number) + dictionary[3]
-                7 -> end(number) + dictionary[3]
-                8 -> end(number) + dictionary[3]
-                9 -> end(number).substring(0, 5) + "но" + dictionary[4]
-                else -> ""
+                9 -> end(number).substring(0, 5) + "но" + dictionary[3]
+                else -> dictionary1(number % 10, k)
             }
         }
         if (k == 2) {
             l = when (number % 10) {
-                1 -> dictionary[4]
-                2 -> end(number).substring(0, 3) + "е" + dictionary[5]
-                3 -> end(number) + dictionary[6]
-                4 -> end(number) + dictionary[6]
-                5 -> end(number) + dictionary[7]
-                6 -> end(number) + dictionary[7]
-                7 -> end(number) + dictionary[7]
-                8 -> end(number) + dictionary[7]
-                9 -> end(number) + dictionary[7]
-                else -> ""
+                1 -> dictionary[3]
+                2 -> end(number).substring(0, 3) + "е" + dictionary[4]
+                3 -> end(number) + dictionary[5]
+                4 -> end(number) + dictionary[5]
+                else -> dictionary1(number % 10, k)
             }
 
         }
         if (k == 3) {
             if (number % 100 in 10..19) {
-                l = teens(number) + dictionary[10]
+                l = teens(number) + dictionary[8]
                 k = 1
                 number /= 10
             } else {
                 l = when (number % 10) {
-                    1 -> end(number).substring(0, 3) + "на" + dictionary[9]
-                    2 -> end(number).substring(0, 3) + "е" + dictionary[9]
-                    3 -> end(number) + dictionary[9]
-                    4 -> end(number) + dictionary[9]
-                    5 -> end(number) + dictionary[10]
-                    6 -> end(number) + dictionary[10]
-                    7 -> end(number) + dictionary[10]
-                    8 -> end(number) + dictionary[10]
-                    9 -> end(number) + dictionary[10]
-                    else -> dictionary[10]
+                    0 -> dictionary[8]
+                    1 -> end(number).substring(0, 3) + "на" + dictionary[6]
+                    2 -> end(number).substring(0, 3) + "е" + dictionary[7]
+                    3 -> end(number) + dictionary[7]
+                    4 -> end(number) + dictionary[7]
+                    else -> dictionary1(number % 10, k)
                 }
                 k = 0
             }
