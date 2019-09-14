@@ -122,7 +122,7 @@ fun lcm(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..sqrt(n.toDouble()).toInt()) {
+    for (i in 2..floor(sqrt(n.toDouble())).toInt()) {
         if (n % i == 0) return i
     }
     return n
@@ -152,7 +152,7 @@ fun isCoPrime(m: Int, n: Int): Boolean = m * n / lcm(m, n) == 1
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    for (i in sqrt(m.toDouble()).toInt()..sqrt(n.toDouble()).toInt()) {
+    for (i in floor(sqrt(m.toDouble())).toInt()..floor(sqrt(n.toDouble())).toInt()) {
         if (sqr(i) in m..n) return true
     }
     return false
@@ -193,7 +193,7 @@ fun collatzSteps(x: Int): Int =
 fun subSinCos(x: Double, eps: Double, i: Int): Double {
     var plus = 0
     var factorial = 2 + i
-    val e = x - (floor((x / (2 * PI))) * 2 * PI)
+    val e = x % (2 * PI)
     var xPI = if (i == 1) e else 1.0
     var k = e.pow(2 + i) / ((factorial - 1) * (factorial))
     while (abs(k) >= eps) {
