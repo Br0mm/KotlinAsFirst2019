@@ -362,4 +362,108 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun end(k: Int): String {
+    return when (k % 10) {
+        0 -> ""
+        1 -> " один"
+        2 -> " два"
+        3 -> " три"
+        4 -> " четыре"
+        5 -> " пять"
+        6 -> " шесть"
+        7 -> " семь"
+        8 -> " восемь"
+        else -> " девять"
+    }
+}
+
+fun teens(k: Int): String {
+    val l = "надцать"
+    return when (k % 100) {
+        10 -> "десять"
+        11 -> end(k) + l
+        12 -> end(k).substring(0, 3) + "е" + l
+        13 -> end(k) + l
+        14 -> end(k).substring(0, 6) + l
+        15 -> end(k).substring(0, 4) + l
+        16 -> end(k).substring(0, 5) + l
+        17 -> end(k).substring(0, 4) + l
+        18 -> end(k).substring(0, 6) + l
+        19 -> end(k).substring(0, 6) + l
+        else -> end(k)
+    }
+}
+
+fun russian(n: Int): String {
+    val dictionary = listOf(
+        "надцать", "дцать", "сорок", "десят", "сто", "сти",
+        "ста", "сот", " тысяча", " тысячи", " тысяч"
+    )
+    var number = n
+    var k = 0
+    var line = ("")
+    var l = ("")
+    while (number > 0) {
+        if (k == 0) {
+            l = teens(number)
+            if (number % 100 in 10..19) {
+                line = l
+                number /= 10
+                k += 1
+            }
+        }
+        if (k == 1) {
+            l = when (number % 10) {
+                2 -> end(number) + dictionary[1]
+                3 -> end(number) + dictionary[1]
+                4 -> end(number) + dictionary[2]
+                5 -> end(number) + dictionary[3]
+                6 -> end(number) + dictionary[3]
+                7 -> end(number) + dictionary[3]
+                8 -> end(number) + dictionary[3]
+                9 -> end(number).substring(0, 5) + "но" + dictionary[4]
+                else -> ""
+            }
+        }
+        if (k == 2) {
+            l = when (number % 10) {
+                1 -> dictionary[4]
+                2 -> end(number).substring(0, 3) + "е" + dictionary[5]
+                3 -> end(number) + dictionary[6]
+                4 -> end(number) + dictionary[6]
+                5 -> end(number) + dictionary[7]
+                6 -> end(number) + dictionary[7]
+                7 -> end(number) + dictionary[7]
+                8 -> end(number) + dictionary[7]
+                9 -> end(number) + dictionary[7]
+                else -> ""
+            }
+
+        }
+        if (k == 3) {
+            if (number % 100 in 10..19) {
+                l = teens(number) + dictionary[10]
+                k = 1
+                number /= 10
+            } else {
+                l = when (number % 10) {
+                    1 -> end(number).substring(0, 3) + "на" + dictionary[9]
+                    2 -> end(number).substring(0, 3) + "е" + dictionary[9]
+                    3 -> end(number) + dictionary[9]
+                    4 -> end(number) + dictionary[9]
+                    5 -> end(number) + dictionary[10]
+                    6 -> end(number) + dictionary[10]
+                    7 -> end(number) + dictionary[10]
+                    8 -> end(number) + dictionary[10]
+                    9 -> end(number) + dictionary[10]
+                    else -> dictionary[10]
+                }
+                k = 0
+            }
+        }
+        line = l + line
+        k += 1
+        number /= 10
+    }
+    return line.trim()
+}
