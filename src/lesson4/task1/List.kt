@@ -416,7 +416,7 @@ fun russian(n: Int): String {
             l = when (number % 10) {
                 2 -> end(number) + dictionary[1]
                 3 -> end(number) + dictionary[1]
-                4 -> end(number) + dictionary[2]
+                4 -> dictionary[2]
                 5 -> end(number) + dictionary[3]
                 6 -> end(number) + dictionary[3]
                 7 -> end(number) + dictionary[3]
