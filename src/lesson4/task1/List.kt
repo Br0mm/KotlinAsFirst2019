@@ -399,22 +399,30 @@ fun dictionary1(number: Int, k: Int): String {
     var l = ""
     val dictionary = listOf("десят", "сот", " тысяч")
     l = when {
-
+        number == 0 && k == 3 -> " тысяч"
+        number == 1 && k == 2 -> " сто"
+        number == 1 && k == 3 -> end(number).substring(0, 3) + "на тысяча"
+        number == 2 && k == 1 -> end(number) + "дцать"
+        number == 2 && k == 2 -> end(number).substring(0, 3) + "ести"
+        number == 2 && k == 3 -> end(number).substring(0, 3) + "е тысячи"
+        number == 3 && k == 1 -> end(number) + "дцать"
+        number == 3 && k == 2 -> end(number) + "ста"
+        number == 3 && k == 2 -> end(number) + " тысячи"
+        number == 4 && k == 1 -> " сорок"
+        number == 4 && k == 2 -> end(number) + "ста"
+        number == 4 && k == 2 -> end(number) + " тысячи"
         number == 5 -> end(number) + dictionary[k - 1]
         number == 6 -> end(number) + dictionary[k - 1]
         number == 7 -> end(number) + dictionary[k - 1]
         number == 8 -> end(number) + dictionary[k - 1]
-        number == 9 -> end(number) + dictionary[k - 1]
+        number == 9 && k == 1 -> end(number).substring(0, 5) + "носто"
+        number == 9 && k != 1 -> end(number) + dictionary[k - 1]
         else -> ""
     }
     return l
 }
 
 fun russian(n: Int): String {
-    val dictionary = listOf(
-        "надцать", "дцать", "сорок", "сто", "сти",
-        "ста", " тысяча", " тысячи", " тысяч"
-    )
     var number = n
     var k = 0
     var line = ("")
@@ -425,42 +433,17 @@ fun russian(n: Int): String {
             if (number % 100 in 10..19) {
                 line = l
                 number /= 10
-                k += 1
+                k = 1
             }
         }
-        if (k == 1) {
-            l = when (number % 10) {
-                2 -> end(number) + dictionary[1]
-                3 -> end(number) + dictionary[1]
-                4 -> dictionary[2]
-                9 -> end(number).substring(0, 5) + "но" + dictionary[3]
-                else -> dictionary1(number % 10, k)
-            }
-        }
-        if (k == 2) {
-            l = when (number % 10) {
-                1 -> dictionary[3]
-                2 -> end(number).substring(0, 3) + "е" + dictionary[4]
-                3 -> end(number) + dictionary[5]
-                4 -> end(number) + dictionary[5]
-                else -> dictionary1(number % 10, k)
-            }
-
-        }
+        if (k != 0) l = dictionary1(number % 10, k)
         if (k == 3) {
             if (number % 100 in 10..19) {
-                l = teens(number) + dictionary[8]
+                l = teens(number) + " тысяч"
                 k = 1
                 number /= 10
             } else {
-                l = when (number % 10) {
-                    0 -> dictionary[8]
-                    1 -> end(number).substring(0, 3) + "на" + dictionary[6]
-                    2 -> end(number).substring(0, 3) + "е" + dictionary[7]
-                    3 -> end(number) + dictionary[7]
-                    4 -> end(number) + dictionary[7]
-                    else -> dictionary1(number % 10, k)
-                }
+                l = dictionary1(number % 10, k)
                 k = 0
             }
         }
