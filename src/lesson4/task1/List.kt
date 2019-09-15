@@ -110,7 +110,8 @@ fun isPalindrome(str: String): Boolean {
  * По имеющемуся списку целых чисел, например [3, 6, 5, 4, 9], построить строку с примером их суммирования:
  * 3 + 6 + 5 + 4 + 9 = 27 в данном случае.
  */
-fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", postfix = " = ${list.sum()}")
+fun buildSumExample(list: List<Int>) =
+    list.joinToString(separator = " + ", postfix = " = ${list.sum()}")
 
 /**
  * Простая
@@ -275,10 +276,12 @@ fun convertToString(n: Int, base: Int): String {
     var a = n
     var numbers = ("")
     while (a >= base) {
-        numbers = if (a % base < 10) "${a % base}" + numbers else (a % base + 87).toChar() + numbers
+        numbers = if (a % base < 10) "${a % base}" + numbers
+        else (a % base + 87).toChar() + numbers
         a /= base
     }
-    numbers = if (a % base < 10) "${a % base}" + numbers else (a % base + 87).toChar() + numbers
+    numbers = if (a % base < 10) "${a % base}" + numbers
+    else (a % base + 87).toChar() + numbers
     return numbers
 }
 
@@ -328,32 +331,32 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
+fun subRoman(n: Int, k: Int): String {
+    val listOfNumbers1 = listOf("D", "L", "V")
+    val listOfNumbers2 = listOf("CM", "XC", "IX")
+    val listOfNumbers3 = listOf("CD", "XL", "IV")
+    var numbers = ("")
+    if (n / 10.0.pow(2 - k).toInt() >= 5 && n / 10.0.pow(2 - k).toInt() != 9)
+        numbers += listOfNumbers1[k]
+    when {
+        n / 10.0.pow(2 - k).toInt() == 9 -> numbers += listOfNumbers2[k]
+        n / 10.0.pow(2 - k).toInt() == 4 -> numbers += listOfNumbers3[k]
+        else -> for (i in 1..(n % (5 * 10.0.pow(2 - k)) / 10.0.pow(2 - k)).toInt())
+            numbers += listOfNumbers3[k].substring(0, 1)
+    }
+    return numbers
+}
+
 fun roman(n: Int): String {
     var a = n
     var numbers = ("")
     for (i in 1..a / 1000) numbers += "M"
     a %= 1000
-    if (a / 100 >= 5 && a / 100 != 9) numbers += "D"
-    when {
-        a / 100 == 9 -> numbers += "CM"
-        a / 100 == 4 -> numbers += "CD"
-        else -> for (i in 1..(a % 500) / 100) numbers += "C"
+    for (i in 0..2) {
+        numbers += subRoman(a, i)
+        a %= (10.0.pow(2 - i)).toInt()
     }
-    a %= 100
-    if (a / 10 >= 5 && a / 10 != 9) numbers += "L"
-    when {
-        a / 10 == 9 -> numbers += "XC"
-        a / 10 == 4 -> numbers += "XL"
-        else -> for (i in 1..(a % 50) / 10) numbers += "X"
-    }
-    a %= 10
-    if (a >= 5 && a != 9) numbers += "V"
-    when (a) {
-        9 -> numbers += "IX"
-        4 -> numbers += "IV"
-        else -> for (i in 1..a % 5) numbers += "I"
-    }
-    return numbers
+    return numbers + subRoman(a, 2)
 }
 
 /**
