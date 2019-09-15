@@ -356,7 +356,7 @@ fun roman(n: Int): String {
         numbers += subRoman(a, i)
         a %= (10.0.pow(2 - i)).toInt()
     }
-    return numbers + subRoman(a, 2)
+    return numbers
 }
 
 /**
