@@ -194,8 +194,10 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val k = mutableMapOf<String, Double>()
     for ((key, value) in stockPrices) {
-        if (k[key] == null) k[key] = value
-        else k[key] = (k[key]!! + value) / 2
+        if (k[key] == null) {
+            if (value > 0) k[key] = value else k[key] = -1.0
+        } else if (k[key]!! > 0) k[key] = (k[key]!! + value) / 2
+        else k[key] = (k[key]!! + value + 1.0) / 2
     }
     return k
 }
@@ -237,7 +239,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    for (i in 0 until word.length) if (chars.contains(word[i])) else return false
+    for (i in 0 until word.length)
+        if (chars.contains(word[i].toLowerCase()) || chars.contains(word[i].toUpperCase()))
+        else return false
     return true
 }
 
@@ -254,16 +258,19 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
+    var k = 0
     val rightMap = mutableMapOf<String, Int>()
     val wrongMap = mutableMapOf<String, Int>()
     for (letter in list) {
         if (rightMap[letter] != null) rightMap[letter] = rightMap[letter]!! + 1
+        if (letter == "") k += 1
         if (wrongMap[letter] == null) wrongMap[letter] = 1
         else {
             rightMap[letter] = 2
             wrongMap.remove(letter)
         }
     }
+    if (k > 1) rightMap[""] = k
     return rightMap
 }
 
