@@ -283,6 +283,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun subHasAnagrams(line1: String, line2: String): Boolean {
+    if (line1 == "" || line2 == "") return false
     val rightMap = mutableMapOf<Char, Int>()
     for (char in line1) {
         if (rightMap[char] != null) rightMap[char] = rightMap[char]!! + 1
