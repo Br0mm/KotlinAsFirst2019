@@ -283,6 +283,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun subHasAnagrams(line1: String, line2: String): Boolean {
+    if (line1 == "" && line2 == "") return true
     if (line1 == "" || line2 == "") return false
     val rightMap = mutableMapOf<Char, Int>()
     for (char in line1) {
@@ -331,6 +332,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> { //доделать
+    if (friends.isEmpty()) return friends
     val list = friends as MutableMap<String, MutableSet<String>> // присвааиваю изначальный лист
     for ((key, value) in friends) {
         for (name in value) {
