@@ -331,13 +331,13 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> { //доделать
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     if (friends.isEmpty()) return friends
-    val list = friends as MutableMap<String, MutableSet<String>> // присвааиваю изначальный лист
+    var list = friends as MutableMap<String, MutableSet<String>> // присваиваю изначальный лист
     for ((key, value) in friends) {
-        for (name in value) {
-            if (list[name] == null) list[name] =
-                mutableSetOf<String>() // если не существует пар с этим человеком добавляю
+        for (name in value) { // проверяю имена людей
+            if (list[name] == null) list = (list + Pair(name, mutableSetOf()))
+                    as MutableMap<String, MutableSet<String>> // если не существует пар с этим человеком добавляю
             list[key] = (list[name]!! + list[key]!!) as MutableSet<String>
         }
         if (list[key]!!.contains(key)) list[key]!!.remove(key) // убираю имена чтобы не дружили сами с собой
