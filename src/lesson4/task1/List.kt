@@ -121,9 +121,8 @@ fun buildSumExample(list: List<Int>) =
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double {
-    var sum = 0.0
-    for (element in v) sum += sqr(element)
-    return sqrt(sum)
+    if (v.isEmpty()) return 0.0
+    return sqrt(v.fold(0.0) { total, next -> total + sqr(next) })
 }
 
 /**
@@ -272,17 +271,20 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
+fun subConvertToString(k: Int): String {
+    return if (k < 10) "$k"
+    else (k + 87).toChar().toString()
+}
+
 fun convertToString(n: Int, base: Int): String {
     var a = n
-    var numbers = ("")
+    val numbers = StringBuilder()
     while (a >= base) {
-        numbers = if (a % base < 10) "${a % base}" + numbers
-        else (a % base + 87).toChar() + numbers
+        numbers.insert(0, subConvertToString(a % base))
         a /= base
     }
-    numbers = if (a % base < 10) "${a % base}" + numbers
-    else (a % base + 87).toChar() + numbers
-    return numbers
+    numbers.insert(0, subConvertToString(a % base))
+    return numbers.toString()
 }
 
 /**
@@ -331,32 +333,32 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun subRoman(n: Int, k: Int): String {
+fun subRoman(n: Int, k: Int): StringBuilder {
     val listOfNumbers1 = listOf("D", "L", "V")
     val listOfNumbers2 = listOf("CM", "XC", "IX")
     val listOfNumbers3 = listOf("CD", "XL", "IV")
-    var numbers = ("")
+    val numbers = StringBuilder()
     if (n / 10.0.pow(2 - k).toInt() >= 5 && n / 10.0.pow(2 - k).toInt() != 9)
-        numbers += listOfNumbers1[k]
+        numbers.append(listOfNumbers1[k])
     when {
-        n / 10.0.pow(2 - k).toInt() == 9 -> numbers += listOfNumbers2[k]
-        n / 10.0.pow(2 - k).toInt() == 4 -> numbers += listOfNumbers3[k]
+        n / 10.0.pow(2 - k).toInt() == 9 -> numbers.append(listOfNumbers2[k])
+        n / 10.0.pow(2 - k).toInt() == 4 -> numbers.append(listOfNumbers3[k])
         else -> for (i in 1..(n % (5 * 10.0.pow(2 - k)) / 10.0.pow(2 - k)).toInt())
-            numbers += listOfNumbers3[k].substring(0, 1)
+            numbers.append(listOfNumbers3[k].substring(0, 1))
     }
     return numbers
 }
 
 fun roman(n: Int): String {
     var a = n
-    var numbers = ("")
-    for (i in 1..a / 1000) numbers += "M"
+    val numbers = StringBuilder()
+    for (i in 1..a / 1000) numbers.append("M")
     a %= 1000
     for (i in 0..2) {
-        numbers += subRoman(a, i)
+        numbers.append(subRoman(a, i))
         a %= (10.0.pow(2 - i)).toInt()
     }
-    return numbers
+    return numbers.toString()
 }
 
 /**
@@ -366,8 +368,10 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun end(k: Int): String { // Функция, определяющая название числа
-    return when (k) {
+var P = 0
+var Number = 0
+fun end(): String { // Функция, определяющая название числа
+    return when (Number) {
         0 -> ""
         1 -> " один"
         2 -> " два"
@@ -381,71 +385,68 @@ fun end(k: Int): String { // Функция, определяющая назва
     }
 }
 
-fun teens(k: Int): String { // Функция, определяющая название от 10 до 19 или числа
+fun teens(): String { // Функция, определяющая название от 10 до 19 или числа
     val l = "надцать"
-    return when (k % 100) {
+    val m = Number
+    Number %= 10
+    return when (m) {
         10 -> " десять"
-        11 -> end(k % 10) + l
-        12 -> end(k % 10).substring(0, 3) + "е" + l
-        13 -> end(k % 10) + l
-        14 -> end(k % 10).substring(0, 6) + l
-        15 -> end(k % 10).substring(0, 4) + l
-        16 -> end(k % 10).substring(0, 5) + l
-        17 -> end(k % 10).substring(0, 4) + l
-        18 -> end(k % 10).substring(0, 6) + l
-        19 -> end(k % 10).substring(0, 6) + l
-        else -> end(k % 10)
+        11, 13 -> end() + l
+        12 -> end().substring(0, 3) + "е" + l
+        16 -> end().substring(0, 5) + l
+        15, 17 -> end().substring(0, 4) + l
+        14, 18, 19 -> end().substring(0, 6) + l
+        else -> end()
     }
 }
 
-fun dictionary1(a: Int, k: Int): String { // Функция определяющая склонение разрядов числа
-    val number = a % 10
+fun dictionary1(): String { // Функция определяющая склонение разрядов числа
     val dictionary = listOf("десят", "сот", " тысяч", " тысячи", "ста")
-    if (k == 0) return teens(a)
-    if (k == 3 && a in 10..19) return teens(a) + dictionary[2]
-    if (number == 3) when (k) { // Определение разрядов 3 (тридцать, триста, три тысячи)
-        1 -> return end(number) + "дцать"
-        2 -> return end(number) + dictionary[4]
-        3 -> return end(number) + " тысячи"
+    if (P == 0) return teens()
+    if (P == 3 && Number in 10..19) return teens() + dictionary[2]
+    Number %= 10
+    if (Number == 3) when (P) { // Определение разрядов 3 (тридцать, триста, три тысячи)
+        1 -> return end() + "дцать"
+        2 -> return end() + dictionary[4]
+        3 -> return end() + " тысячи"
     }
-    if (number == 2) when (k) { // Определение разрядов 2
-        1 -> return end(number) + "дцать"
-        2 -> return end(number).substring(0, 3) + "ести"
-        3 -> return end(number).substring(0, 3) + "е" + dictionary[3]
+    if (Number == 2) when (P) { // Определение разрядов 2
+        1 -> return end() + "дцать"
+        2 -> return end().substring(0, 3) + "ести"
+        3 -> return end().substring(0, 3) + "е" + dictionary[3]
     }
-    if (number == 4) when (k) { // Определение разрядов 4
+    if (Number == 4) when (P) { // Определение разрядов 4
         1 -> return " сорок"
-        2 -> return end(number) + dictionary[4]
-        3 -> return end(number) + dictionary[3]
+        2 -> return end() + dictionary[4]
+        3 -> return end() + dictionary[3]
     }
     return when { // Определение разрядов оставшихся цифр
-        number == 0 && k == 3 -> dictionary[2]
-        number == 1 && k == 2 -> " сто"
-        number == 1 && k == 3 -> end(number).substring(0, 3) + "на тысяча"
-        number == 5 -> end(number) + dictionary[k - 1]
-        number == 6 -> end(number) + dictionary[k - 1]
-        number == 7 -> end(number) + dictionary[k - 1]
-        number == 8 -> end(number) + dictionary[k - 1]
-        number == 9 && k == 1 -> end(number).substring(0, 5) + "носто"
-        number == 9 && k != 1 -> end(number) + dictionary[k - 1]
+        Number == 0 && P == 3 -> dictionary[2]
+        Number == 1 && P == 2 -> " сто"
+        Number == 1 && P == 3 -> end().substring(0, 3) + "на тысяча"
+        Number in 5..8 -> end() + dictionary[P - 1]
+        Number == 9 && P == 1 -> end().substring(0, 5) + "носто"
+        Number == 9 && P != 1 -> end() + dictionary[P - 1]
         else -> ""
     }
 }
 
 fun russian(n: Int): String { // Функция переводящая число в строку
     var number = n
-    var k = 0
-    var line = ("")
+    val line = StringBuilder()
     while (number > 0) {
-        line = dictionary1(number % 100, k) + line
-        if (k == 0 || k == 3) {
+        Number = number % 100
+        line.insert(0, dictionary1())
+        if (P == 0 || P == 3) {
             if (number % 100 in 10..19) {
                 number /= 10
-                k = 1
-            } else if (k == 3) k = 0
+                P = 1
+            } else if (P == 3) P = 0
         }
-        k += 1
+        P += 1
         number /= 10
     }
-    return line.trim()
+    P = 0
+    Number = 0
+    return line.toString().trim()
 }
