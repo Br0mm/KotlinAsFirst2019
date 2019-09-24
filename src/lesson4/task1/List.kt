@@ -276,7 +276,8 @@ fun subConvertToString(k: Int): Char {
     else 'a' + (k - 10)
 }
 
-fun convertToString(n: Int, base: Int): String = convert(n, base).map { n -> subConvertToString(n) }.joinToString(separator = "")
+fun convertToString(n: Int, base: Int): String =
+    convert(n, base).map { n -> subConvertToString(n) }.joinToString(separator = "")
 
 /**
  * Средняя
@@ -310,8 +311,8 @@ fun decimalFromString(str: String, base: Int): Int {
     val k = base.toDouble()
     var a = 0.0
     for (i in 0 until str.length) {
-        a += if (str[i].toInt() < 58) k.pow(str.length - i - 1) * (str[i].toInt() - 48)
-        else k.pow(str.length - i - 1) * (str[i].toInt() - 87)
+        a += if (str[i] <= '9') k.pow(str.length - i - 1) * (str[i] - '0')
+        else k.pow(str.length - i - 1) * ((str[i] + 10) - 'a')
     }
     return a.toInt()
 }
