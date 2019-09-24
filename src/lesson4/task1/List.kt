@@ -271,21 +271,12 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun subConvertToString(k: Int): String {
-    return if (k < 10) "$k"
-    else (k + 87).toChar().toString()
+fun subConvertToString(k: Int): Char {
+    return if (k < 10) '0' + k
+    else 'a' + (k - 10)
 }
 
-fun convertToString(n: Int, base: Int): String {
-    var a = n
-    val numbers = StringBuilder()
-    while (a >= base) {
-        numbers.insert(0, subConvertToString(a % base))
-        a /= base
-    }
-    numbers.insert(0, subConvertToString(a % base))
-    return numbers.toString()
-}
+fun convertToString(n: Int, base: Int): String = convert(n, base).map { n -> subConvertToString(n) }.joinToString(separator = "")
 
 /**
  * Средняя
@@ -410,6 +401,7 @@ fun dictionary1(): String { // Функция определяющая скло�
         2 -> return end() + dictionary[4]
         3 -> return end() + " тысячи"
     }
+    "abc".last()
     if (Number == 2) when (P) { // Определение разрядов 2
         1 -> return end() + "дцать"
         2 -> return end().substring(0, 3) + "ести"

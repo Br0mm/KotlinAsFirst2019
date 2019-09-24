@@ -271,21 +271,23 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun subSequenceDigit(n: Int, k: Int): Int {
+fun subSequenceDigit(
+    n: Int,
+    nthElementOfSequence: (n: Int) -> Int
+): Int {
     var size = 0
-    var m = 0
-    var number = 1
-    if (n < 2) return 1 else if (k == 1) size += 1
+    var value = 0
+    var number = 0
+    if (n <= 1) return 1
     while (n > size) {
-        number += m
-        if (k == 0) m += 1 else m = number - m
-        size += if (k == 0) digitNumber(sqr(m)) else digitNumber(number)
+        number++
+        value = nthElementOfSequence(number)
+        size += digitNumber(value)
     }
-    m = if (k == 0) sqr(m) else number
-    return ((m / 10.0.pow(size - n)) % 10).toInt()
+    return ((value / 10.0.pow(size - n)) % 10).toInt()
 }
 
-fun squareSequenceDigit(n: Int): Int = subSequenceDigit(n, 0)
+fun squareSequenceDigit(n: Int): Int = subSequenceDigit(n) { number -> sqr(number) }
 
 /**
  * Сложная
@@ -296,4 +298,4 @@ fun squareSequenceDigit(n: Int): Int = subSequenceDigit(n, 0)
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = subSequenceDigit(n, 1)
+fun fibSequenceDigit(n: Int): Int = subSequenceDigit(n) { number -> fib(number) }
