@@ -300,7 +300,7 @@ fun subHasAnagrams(line1: String, line2: String): Boolean {
     return true
 }
 
-fun hasAnagrams(words: List<String>): Boolean {
+fun hasAnagrams(words: List<String>): Boolean { // переписать
     for (i in 0 until words.size - 1)
         for (j in (i + 1) until words.size)
             if (subHasAnagrams(words[i], words[j])) return true
@@ -381,7 +381,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
                 return Pair(list.indexOf(k.elementAt(i)), list.indexOf(number - k.elementAt(i)))
         i += 1
     }
-    if (list.contains(number / 2)) if (index1 != index2) return Pair(index1, index2)
+    if (list.contains(number / 2) && number % 2 == 0) if (index1 != index2) return Pair(index1, index2)
     return Pair(-1, -1)
 }
 
@@ -407,3 +407,5 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+// пробежаться по мапу, высчитывая стоимостьсокровища за единицу и попутно находя два минимальных веса сокровищ
+// если рюкзак не сможет вместить два минимальных веса сокровищ смотреть только по стоимости
