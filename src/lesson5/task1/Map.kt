@@ -2,6 +2,9 @@
 
 package lesson5.task1
 
+import kotlin.math.max
+
+
 /**
  * Пример
  *
@@ -406,6 +409,29 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
-// пробежаться по мапу, высчитывая стоимостьсокровища за единицу и попутно находя два минимальных веса сокровищ
-// если рюкзак не сможет вместить два минимальных веса сокровищ смотреть только по стоимости
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val answer = mutableSetOf<String>() // ответ
+    val weight = mutableListOf<Int>() // вес сокровищ
+    val price = mutableListOf<Int>() // цена сокровищ
+    val keysOfMap = mutableListOf<String>() // названия сокровищ
+    var k = 0
+    val items: MutableList<MutableList<Int>> = MutableList(treasures.size + 1) { MutableList(capacity + 1) { 0 } } // таблица цен
+    for ((key, value) in treasures) {
+        weight.add(value.first)
+        price.add(value.second)
+        keysOfMap.add(key)
+        k += 1
+    }
+    for (i in 1..weight.size)
+        for (j in 1..capacity) {
+            if (weight[i - 1] <= j)
+                items[i][j] = max(items[i - 1][j], items[i - 1][j - weight[i - 1]] + price[i])
+            else items[i][j] = items[i - 1][j]
+        }
+    for (i in capacity downTo 1) {
+        if (items[weight.size][i] > items[weight.size][i - 1]) {
+            answer.add(keysOfMap[weight.indexOf(i)])
+        }
+    }
+    return answer
+}
