@@ -364,12 +364,13 @@ var Digit = 0
 var Number = 0
 var End = listOf( // лист названий чисел от 0 до 10
     "", " один", " два", " три", " четыре", " пять",
-    " шесть", " семь", " восемь", " девять", " десять"
+    " шесть", " семь", " восемь", " девять"
 )
 
 fun teens(): String { // Функция, определяющая название от 11 до 19 или числа
     val l = "надцать"
-    if (Number !in 11..19) return End[Number % 10]
+    if (Number !in 10..19) return End[Number % 10]
+    if (Number == 10) return " десять"
     if (End[Number % 10].contains("ь")) return End[Number % 10].removeSuffix("ь") + l
     if (End[Number % 10].contains("е")) return " четырнадцать"
     if (End[Number % 10].contains("а")) return " двенадцать"
