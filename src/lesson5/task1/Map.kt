@@ -429,9 +429,9 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 items[i][j] = max(items[i - 1][j], items[i - 1][j - weight[i - 1]] + price[i - 1])
             else items[i][j] = items[i - 1][j]
         }
-    for (i in capacity downTo 1) {
-        if (items[weight.size][i] > items[weight.size][i - 1]) {
-            answer.add(keysOfMap[weight.indexOf(i)])
+    for (i in weight.size downTo 1) {
+        if (items[i][capacity] > items[i - 1][capacity]) {
+            answer.add(keysOfMap[i - 1])
         }
     }
     return answer
