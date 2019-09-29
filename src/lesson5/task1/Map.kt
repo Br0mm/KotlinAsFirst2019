@@ -429,14 +429,15 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 items[i][j] = max(items[i - 1][j], items[i - 1][j - weight[i - 1]] + price[i - 1])
             else items[i][j] = items[i - 1][j]
         }
-    var deltaPrice = 0
-    for (i in weight.size downTo 1) {
-        if (items[i][capacity] > items[i - 1][capacity]) {
-            answer.add(keysOfMap[i - 1])
-            if (deltaPrice > 0) {
-                answer.remove(keysOfMap[i - 1])
-                deltaPrice -= (items[i][capacity] - items[i - 1][capacity])
-            } else deltaPrice = price[i - 1] - (items[i][capacity] - items[i - 1][capacity])
+
+    var n = treasures.size
+    k = capacity
+    while (n > 0 && k > 0) { // переписать аналогично рекурсии ниже, чтобы работало
+        if (items[n][k] == items[n - 1][k]) n -= 1
+        else {
+            answer.add(keysOfMap[n - 1])
+            n -= 1
+            k -= weight[n]
         }
     }
     return answer
