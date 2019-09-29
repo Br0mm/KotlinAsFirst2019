@@ -429,14 +429,15 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 items[i][j] = max(items[i - 1][j], items[i - 1][j - weight[i - 1]] + price[i - 1])
             else items[i][j] = items[i - 1][j]
         }
-    var sum = 0
-    for (i in weight.size downTo 1) { // переписать ответ, используя формулу для нахождения самой большой суммы сокровищ
+    var deltaPrice = 0
+    for (i in weight.size downTo 1) {
         if (items[i][capacity] > items[i - 1][capacity]) {
             answer.add(keysOfMap[i - 1])
             if (price.contains(items[weight.size][capacity])) return answer
-            if (price[i - 1] + sum >= items[i][capacity] && items[i - 1][capacity] != 0)
+            if (deltaPrice > 0) {
                 answer.remove(keysOfMap[i - 1])
-            else sum += price[i - 1]
+                deltaPrice -= (items[i][capacity] - items[i - 1][capacity])
+            } else deltaPrice = price[i - 1] - (items[i][capacity] - items[i - 1][capacity])
         }
     }
     return answer
