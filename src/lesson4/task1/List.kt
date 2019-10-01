@@ -152,6 +152,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
     return list
 }
 
+
 /**
  * Средняя
  *
@@ -289,7 +290,7 @@ fun convertToString(n: Int, base: Int): String =
 fun decimal(digits: List<Int>, base: Int): Int {
     val k = base.toDouble()
     var a = 0.0
-    for (i in 0 until digits.size) {
+    for (i in digits.indices) {
         a += k.pow(digits.size - i - 1) * digits[i]
     }
     return a.toInt()
@@ -310,9 +311,9 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     val k = base.toDouble()
     var a = 0.0
-    for (i in 0 until str.length) {
-        a += if (str[i] <= '9') k.pow(str.length - i - 1) * (str[i] - '0')
-        else k.pow(str.length - i - 1) * ((str[i] + 10) - 'a')
+    for (i in str.indices) {
+        a += if (str[i].toInt() < 58) k.pow(str.length - i - 1) * (str[i].toInt() - 48)
+        else k.pow(str.length - i - 1) * (str[i].toInt() - 87)
     }
     return a.toInt()
 }
@@ -360,50 +361,66 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-var Digit = 0
+var P = 0
 var Number = 0
-var End = listOf( // лист названий чисел от 0 до 10
-    "", " один", " два", " три", " четыре", " пять",
-    " шесть", " семь", " восемь", " девять"
-)
+fun end(): String { // Функция, определяющая название числа
+    return when (Number) {
+        0 -> ""
+        1 -> " один"
+        2 -> " два"
+        3 -> " три"
+        4 -> " четыре"
+        5 -> " пять"
+        6 -> " шесть"
+        7 -> " семь"
+        8 -> " восемь"
+        else -> " девять"
+    }
+}
 
-fun teens(): String { // Функция, определяющая название от 11 до 19 или числа
+fun teens(): String { // Функция, определяющая название от 10 до 19 или числа
     val l = "надцать"
-    if (Number !in 10..19) return End[Number % 10]
-    if (Number == 10) return " десять"
-    if (End[Number % 10].contains("ь")) return End[Number % 10].removeSuffix("ь") + l
-    if (End[Number % 10].contains("е")) return " четырнадцать"
-    if (End[Number % 10].contains("а")) return " двенадцать"
-    return End[Number % 10] + l
+    val m = Number
+    Number %= 10
+    return when (m) {
+        10 -> " десять"
+        11, 13 -> end() + l
+        12 -> end().substring(0, 3) + "е" + l
+        16 -> end().substring(0, 5) + l
+        15, 17 -> end().substring(0, 4) + l
+        14, 18, 19 -> end().substring(0, 6) + l
+        else -> end()
+    }
 }
 
 fun dictionary1(): String { // Функция определяющая склонение разрядов числа
     val dictionary = listOf("десят", "сот", " тысяч", " тысячи", "ста")
-    if (Digit == 0) return teens()
-    if (Digit == 3 && Number in 10..19) return teens() + dictionary[2]
+    if (P == 0) return teens()
+    if (P == 3 && Number in 10..19) return teens() + dictionary[2]
     Number %= 10
-    if (Number == 2) when (Digit) { // Определение разрядов 2 (двадцать, двести, две тысячи
-        1 -> return End[Number % 10] + "дцать"
-        2 -> return End[Number % 10].removeSuffix("а") + "ести"
-        3 -> return End[Number % 10].removeSuffix("а") + "е" + dictionary[3]
+    if (Number == 3) when (P) { // Определение разрядов 3 (тридцать, триста, три тысячи)
+        1 -> return end() + "дцать"
+        2 -> return end() + dictionary[4]
+        3 -> return end() + " тысячи"
     }
-    if (Number == 3) when (Digit) { // Определение разрядов 3 (тридцать, триста, три тысячи)
-        1 -> return End[Number % 10] + "дцать"
-        2 -> return End[Number % 10] + dictionary[4]
-        3 -> return End[Number % 10] + " тысячи"
+    "abc".last()
+    if (Number == 2) when (P) { // Определение разрядов 2
+        1 -> return end() + "дцать"
+        2 -> return end().substring(0, 3) + "ести"
+        3 -> return end().substring(0, 3) + "е" + dictionary[3]
     }
-    if (Number == 4) when (Digit) { // Определение разрядов 4
+    if (Number == 4) when (P) { // Определение разрядов 4
         1 -> return " сорок"
-        2 -> return End[Number % 10] + dictionary[4]
-        3 -> return End[Number % 10] + dictionary[3]
+        2 -> return end() + dictionary[4]
+        3 -> return end() + dictionary[3]
     }
     return when { // Определение разрядов оставшихся цифр
-        Number == 0 && Digit == 3 -> dictionary[2]
-        Number == 1 && Digit == 2 -> " сто"
-        Number == 1 && Digit == 3 -> End[Number % 10].removeSuffix("ин") + "на тысяча"
-        Number in 5..8 -> End[Number % 10] + dictionary[Digit - 1]
-        Number == 9 && Digit == 1 -> End[Number % 10].removeSuffix("ть") + "носто"
-        Number == 9 && Digit != 1 -> End[Number % 10] + dictionary[Digit - 1]
+        Number == 0 && P == 3 -> dictionary[2]
+        Number == 1 && P == 2 -> " сто"
+        Number == 1 && P == 3 -> end().substring(0, 3) + "на тысяча"
+        Number in 5..8 -> end() + dictionary[P - 1]
+        Number == 9 && P == 1 -> end().substring(0, 5) + "носто"
+        Number == 9 && P != 1 -> end() + dictionary[P - 1]
         else -> ""
     }
 }
@@ -414,16 +431,16 @@ fun russian(n: Int): String { // Функция переводящая числ�
     while (number > 0) {
         Number = number % 100
         line.insert(0, dictionary1())
-        if (Digit == 0 || Digit == 3) {
+        if (P == 0 || P == 3) {
             if (number % 100 in 10..19) {
                 number /= 10
-                Digit = 1
-            } else if (Digit == 3) Digit = 0
+                P = 1
+            } else if (P == 3) P = 0
         }
-        Digit += 1
+        P += 1
         number /= 10
     }
-    Digit = 0
+    P = 0
     Number = 0
     return line.toString().trim()
 }
