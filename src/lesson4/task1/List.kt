@@ -360,70 +360,70 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-var Digit = 0
-var Number = 0
-var End = listOf( // лист названий чисел от 0 до 10
+var digit = 0
+var number = 0
+var endOfNumber = listOf( // лист названий чисел от 0 до 10
     "", " один", " два", " три", " четыре", " пять",
     " шесть", " семь", " восемь", " девять"
 )
 
 fun teens(): String { // Функция, определяющая название от 11 до 19 или числа
     val l = "надцать"
-    if (Number !in 10..19) return End[Number % 10]
-    if (Number == 10) return " десять"
-    if (End[Number % 10].contains("ь")) return End[Number % 10].removeSuffix("ь") + l
-    if (End[Number % 10].contains("е")) return " четырнадцать"
-    if (End[Number % 10].contains("а")) return " двенадцать"
-    return End[Number % 10] + l
+    if (number !in 10..19) return endOfNumber[number % 10]
+    if (number == 10) return " десять"
+    if (endOfNumber[number % 10].contains("ь")) return endOfNumber[number % 10].removeSuffix("ь") + l
+    if (endOfNumber[number % 10].contains("е")) return " четырнадцать"
+    if (endOfNumber[number % 10].contains("а")) return " двенадцать"
+    return endOfNumber[number % 10] + l
 }
 
 fun dictionary1(): String { // Функция определяющая склонение разрядов числа
     val dictionary = listOf("десят", "сот", " тысяч", " тысячи", "ста")
-    if (Digit == 0) return teens()
-    if (Digit == 3 && Number in 10..19) return teens() + dictionary[2]
-    Number %= 10
-    if (Number == 2) when (Digit) { // Определение разрядов 2 (двадцать, двести, две тысячи
-        1 -> return End[Number % 10] + "дцать"
-        2 -> return End[Number % 10].removeSuffix("а") + "ести"
-        3 -> return End[Number % 10].removeSuffix("а") + "е" + dictionary[3]
+    if (digit == 0) return teens()
+    if (digit == 3 && number in 10..19) return teens() + dictionary[2]
+    number %= 10
+    if (number == 2) when (digit) { // Определение разрядов 2 (двадцать, двести, две тысячи
+        1 -> return endOfNumber[number % 10] + "дцать"
+        2 -> return endOfNumber[number % 10].removeSuffix("а") + "ести"
+        3 -> return endOfNumber[number % 10].removeSuffix("а") + "е" + dictionary[3]
     }
-    if (Number == 3) when (Digit) { // Определение разрядов 3 (тридцать, триста, три тысячи)
-        1 -> return End[Number % 10] + "дцать"
-        2 -> return End[Number % 10] + dictionary[4]
-        3 -> return End[Number % 10] + " тысячи"
+    if (number == 3) when (digit) { // Определение разрядов 3 (тридцать, триста, три тысячи)
+        1 -> return endOfNumber[number % 10] + "дцать"
+        2 -> return endOfNumber[number % 10] + dictionary[4]
+        3 -> return endOfNumber[number % 10] + " тысячи"
     }
-    if (Number == 4) when (Digit) { // Определение разрядов 4
+    if (number == 4) when (digit) { // Определение разрядов 4
         1 -> return " сорок"
-        2 -> return End[Number % 10] + dictionary[4]
-        3 -> return End[Number % 10] + dictionary[3]
+        2 -> return endOfNumber[number % 10] + dictionary[4]
+        3 -> return endOfNumber[number % 10] + dictionary[3]
     }
     return when { // Определение разрядов оставшихся цифр
-        Number == 0 && Digit == 3 -> dictionary[2]
-        Number == 1 && Digit == 2 -> " сто"
-        Number == 1 && Digit == 3 -> End[Number % 10].removeSuffix("ин") + "на тысяча"
-        Number in 5..8 -> End[Number % 10] + dictionary[Digit - 1]
-        Number == 9 && Digit == 1 -> End[Number % 10].removeSuffix("ть") + "носто"
-        Number == 9 && Digit != 1 -> End[Number % 10] + dictionary[Digit - 1]
+        number == 0 && digit == 3 -> dictionary[2]
+        number == 1 && digit == 2 -> " сто"
+        number == 1 && digit == 3 -> endOfNumber[number % 10].removeSuffix("ин") + "на тысяча"
+        number in 5..8 -> endOfNumber[number % 10] + dictionary[digit - 1]
+        number == 9 && digit == 1 -> endOfNumber[number % 10].removeSuffix("ть") + "носто"
+        number == 9 && digit != 1 -> endOfNumber[number % 10] + dictionary[digit - 1]
         else -> ""
     }
 }
 
 fun russian(n: Int): String { // Функция переводящая число в строку
-    var number = n
+    var num = n
     val line = StringBuilder()
-    while (number > 0) {
-        Number = number % 100
+    while (num > 0) {
+        number = num % 100
         line.insert(0, dictionary1())
-        if (Digit == 0 || Digit == 3) {
-            if (number % 100 in 10..19) {
-                number /= 10
-                Digit = 1
-            } else if (Digit == 3) Digit = 0
+        if (digit == 0 || digit == 3) {
+            if (num % 100 in 10..19) {
+                num /= 10
+                digit = 1
+            } else if (digit == 3) digit = 0
         }
-        Digit += 1
-        number /= 10
+        digit += 1
+        num /= 10
     }
-    Digit = 0
-    Number = 0
+    digit = 0
+    number = 0
     return line.toString().trim()
 }

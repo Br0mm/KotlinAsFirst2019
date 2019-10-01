@@ -98,7 +98,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val a = mutableMapOf<Int, MutableList<String>>()
     for ((name, grade) in grades) {
         if (a[grade] == null) a[grade] = mutableListOf(name)
-        else a[grade]?.add(name)
+        else a[grade]!!.add(name)
     }
     return a
 }
@@ -148,13 +148,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val k = mutableSetOf<String>()
-    for (name in a) {
-        if (b.contains(name)) k.add(name)
-    }
-    return k.toList()
-}
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b).toList()
 
 /**
  * Средняя
@@ -415,7 +409,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val price = mutableListOf<Int>() // цена сокровищ
     val keysOfMap = mutableListOf<String>() // названия сокровищ
     var k = 0
-    val items: MutableList<MutableList<Int>> =
+    val items =
         MutableList(treasures.size + 1) { MutableList(capacity + 1) { 0 } } // таблица цен
     for ((key, value) in treasures) {
         weight.add(value.first)
@@ -432,7 +426,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
 
     var n = treasures.size
     k = capacity
-    while (n > 0 && k > 0) { // переписать аналогично рекурсии ниже, чтобы работало
+    while (n > 0 && k > 0) { // возвращение названий сокровищ
         if (items[n][k] == items[n - 1][k]) n -= 1
         else {
             answer.add(keysOfMap[n - 1])
