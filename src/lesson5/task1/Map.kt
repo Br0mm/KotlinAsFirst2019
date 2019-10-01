@@ -238,9 +238,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    for (i in 0 until word.length)
-        if (chars.contains(word[i].toLowerCase()) || chars.contains(word[i].toUpperCase()))
-        else return false
+    for (i in word.indices)
+        if (!chars.contains(word[i].toLowerCase()) && !chars.contains(word[i].toUpperCase()))
+            return false
     return true
 }
 
@@ -348,6 +348,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     }
     return list
 }
+
 
 /**
  * Сложная
