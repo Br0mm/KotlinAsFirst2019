@@ -330,23 +330,23 @@ fun hasAnagrams(words: List<String>): Boolean { // переписать
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     if (friends.isEmpty()) return friends
-    var list = friends as MutableMap<String, MutableSet<String>> // присваиваю изначальный лист
-    var changes = 1
+    var map = friends as MutableMap<String, MutableSet<String>> // присваиваю изначальный лист
+    var changes = true
     var k: Int
-    while (changes != 0) {
-        changes = 0
+    while (changes) {
+        changes = false
         for ((key, value) in friends) {
-            k = list[key]!!.size
+            k = map[key]!!.size
             for (name in value) { // проверяю имена людей
-                if (list[name] == null) list = (list + Pair(name, mutableSetOf()))
+                if (map[name] == null) map = (map + Pair(name, mutableSetOf()))
                         as MutableMap<String, MutableSet<String>> // если не существует пар с этим человеком добавляю
-                list[key] = (list[name]!! + list[key]!!) as MutableSet<String>
+                map[key] = (map[name]!! + map[key]!!) as MutableSet<String>
             }
-            if (list[key]!!.contains(key)) list[key]!!.remove(key) // убираю имена чтобы не дружили сами с собой
-            if (list[key]!!.size > k) changes = 1
+            if (map[key]!!.contains(key)) map[key]!!.remove(key) // убираю имена чтобы не дружили сами с собой
+            if (map[key]!!.size > k) changes = true
         }
     }
-    return list
+    return map
 }
 
 
