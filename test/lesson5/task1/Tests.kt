@@ -254,7 +254,8 @@ class Tests {
         )
         assertEquals(
             mapOf("" to 4),
-            extractRepeats(listOf("", "", "", "")))
+            extractRepeats(listOf("", "", "", ""))
+        )
     }
 
     @Test
@@ -388,6 +389,62 @@ class Tests {
             bagPacking(
                 mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
                 450
+            )
+        )
+        assertEquals(
+            setOf("0"),
+            bagPacking(
+                mapOf("0" to (1 to 1)),
+                1
+            )
+        )
+        assertEquals(
+            setOf("0", "1"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (1 to 1)),
+                2
+            )
+        )
+        assertEquals(
+            setOf("1"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (2 to 2)),
+                2
+            )
+        )
+        assertEquals(
+            setOf("1"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (1 to 2), "2" to (1 to 1)),
+                1
+            )
+        )
+        assertEquals(
+            setOf("2", "0"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (1 to 1), "2" to (1 to 2)),
+                2
+            )
+        )
+        assertEquals(
+            setOf("2", "1", "0"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (1 to 1), "2" to (1 to 1), "3" to (1 to 1)),
+                3
+            )
+        )
+        assertEquals(
+            setOf("1", "0"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (1 to 1), "2" to (1 to 1), "3" to (2 to 2)),
+                2
+            )
+        )
+        assertEquals(
+            setOf("3", "2"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (1 to 1), "2" to (1 to 3), "3" to (1 to 2), "4" to (1 to 1)),
+                2
             )
         )
     }
