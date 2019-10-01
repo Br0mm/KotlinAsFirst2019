@@ -245,8 +245,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     for (i in word.indices)
-        if (chars.contains(word[i].toLowerCase()) || chars.contains(word[i].toUpperCase()))
-        else return false
+        if (!chars.contains(word[i].toLowerCase()) && !chars.contains(word[i].toUpperCase()))
+        return false
     return true
 }
 
@@ -433,7 +433,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
 
     var n = treasures.size
     k = capacity
-    while (n > 0 && k > 0) { // переписать аналогично рекурсии ниже, чтобы работало
+    while (n > 0 && k > 0) { // возвращение названий сокровищ
         if (items[n][k] == items[n - 1][k]) n -= 1
         else {
             answer.add(keysOfMap[n - 1])
