@@ -287,7 +287,7 @@ fun subHasAnagrams(line1: String, line2: String): Boolean {
             else -> return false
         }
     }
-    return rightMap.filterValues { it >= 2 }.isEmpty()
+    return rightMap.filterValues { it > 0 }.isEmpty()
 }
 
 fun hasAnagrams(words: List<String>): Boolean {
