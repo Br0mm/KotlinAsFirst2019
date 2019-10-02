@@ -189,16 +189,18 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val k = mutableMapOf<String, Pair<Int, Double>>()
-    val m = mutableMapOf<String, Double>()
+    val counter = mutableMapOf<String, Pair<Int, Double>>()
+    val answer = mutableMapOf<String, Double>()
     for ((key, value) in stockPrices) {
-        if (k[key] == null) k[key] = Pair(1, value)
-        else k[key] = Pair(k[key]!!.first + 1, value + k[key]!!.second)
+        counter[key] = Pair(
+            counter.getOrPut(key, { Pair(0, 0.0) }).first + 1,
+            counter[key]!!.second + value
+        )
     }
-    for ((key, value) in k) {
-        m[key] = value.second / value.first
+    for ((key, value) in counter) {
+        answer[key] = value.second / value.first
     }
-    return m
+    return answer
 }
 
 /**
@@ -218,14 +220,14 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var min = -1.0
-    var l = ""
+    var l: String? = null
     for ((name, product) in stuff) {
         if (product.first == kind && (min > product.second || min == -1.0)) {
             min = product.second
             l = name
         }
     }
-    return if (min == -1.0) null else l
+    return l
 }
 
 /**
@@ -258,16 +260,10 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val rightMap = mutableMapOf<String, Int>()
-    val wrongMap = mutableMapOf<String, Int>()
     for (letter in list) {
-        if (rightMap[letter] != null) rightMap[letter] = rightMap[letter]!! + 1
-        if (wrongMap[letter] == null) wrongMap[letter] = 1
-        else {
-            if (rightMap[letter] == null) rightMap[letter] = 2
-            wrongMap.remove(letter)
-        }
+        rightMap[letter] = rightMap.getOrPut(letter, { 0 }) + 1
     }
-    return rightMap
+    return rightMap.filterValues { it >= 2 }
 }
 
 /**
@@ -280,12 +276,9 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun subHasAnagrams(line1: String, line2: String): Boolean {
-    if (line1 == "" && line2 == "") return true
-    if (line1 == "" || line2 == "") return false
     val rightMap = mutableMapOf<Char, Int>()
     for (char in line1) {
-        if (rightMap[char] != null) rightMap[char] = rightMap[char]!! + 1
-        else rightMap[char] = 1
+        rightMap[char] = rightMap.getOrPut(char, { 0 }) + 1
     }
     for (char in line2) {
         when {
@@ -294,10 +287,10 @@ fun subHasAnagrams(line1: String, line2: String): Boolean {
             else -> return false
         }
     }
-    return true
+    return rightMap.filterValues { it >= 2 }.isEmpty()
 }
 
-fun hasAnagrams(words: List<String>): Boolean { // переписать
+fun hasAnagrams(words: List<String>): Boolean {
     for (i in 0 until words.size - 1)
         for (j in (i + 1) until words.size)
             if (subHasAnagrams(words[i], words[j])) return true
