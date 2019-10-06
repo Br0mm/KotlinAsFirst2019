@@ -72,28 +72,18 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+val monthNames = listOf(
+    "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря"
+)
+
 fun dateStrToDigit(str: String): String {
-    if (!str.contains(Regex("""[1-9]\d?\s([а-я]{3,8})\s\d"""))) return ("")
-    val parts = str.split(" ").toMutableList()
-    if (parts.size != 3) return ""
+    if (!str.contains(Regex("""^[1-9]\d?\s([а-я]{3,8})\s\d+$"""))) return ("")
+    val parts = str.split(" ")
     val days = parts[0].toInt()
-    val month: Int
     val years = parts[2].toInt()
-    month = when (parts[1]) {
-        "января" -> 1
-        "февраля" -> 2
-        "марта" -> 3
-        "апреля" -> 4
-        "мая" -> 5
-        "июня" -> 6
-        "июля" -> 7
-        "августа" -> 8
-        "сентября" -> 9
-        "октября" -> 10
-        "ноября" -> 11
-        "декабря" -> 12
-        else -> return ""
-    }
+    val month: Int
+    if (!monthNames.contains(parts[1])) return "" else month = monthNames.indexOf(parts[1]) + 1
     if (days > daysInMonth(month, years)) return ""
     return String.format("%02d.%02d.%d", days, month, years)
 }
@@ -108,7 +98,16 @@ fun dateStrToDigit(str: String): String {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    if (!digital.contains(Regex("""^\d+\.\d+\.\d+$"""))) return ("")
+    val parts = digital.split(".")
+    val days = parts[0].toInt()
+    val numberOfMonth = parts[1].toInt()
+    val month: String
+    if (numberOfMonth in 1..12) month = monthNames[numberOfMonth - 1] else return ""
+    if (days > daysInMonth(numberOfMonth, parts[2].toInt())) return ""
+    return String.format("%d %s %s", days, month, parts[2])
+}
 
 /**
  * Средняя
