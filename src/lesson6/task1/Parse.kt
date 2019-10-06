@@ -78,7 +78,7 @@ val monthNames = listOf(
 )
 
 fun dateStrToDigit(str: String): String {
-    if (!str.contains(Regex("""^[1-9]\d?\s([а-я]{3,8})\s\d+$"""))) return ("")
+    if (!str.contains(Regex("""^\d+\s([а-я]{3,8})\s\d+$"""))) return ("")
     val parts = str.split(" ")
     val days = parts[0].toInt()
     val years = parts[2].toInt()
