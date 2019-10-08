@@ -326,3 +326,4 @@ fun subFromRoman(str: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+// сделать ленту с 0, сделать счётчик, указывающий где сейчас датчик и счётчик команд
