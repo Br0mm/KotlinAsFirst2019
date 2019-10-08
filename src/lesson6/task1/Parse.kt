@@ -3,7 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
-import java.lang.StringBuilder
+import kotlin.math.pow
 
 /**
  * Пример
@@ -78,7 +78,7 @@ val monthNames = listOf(
 )
 
 fun dateStrToDigit(str: String): String {
-    if (!str.contains(Regex("""^\d+\s([а-я]{3,8})\s\d+$"""))) return ("")
+    if (!str.matches(Regex("""^\d+\s([а-я]{3,8})\s\d+$"""))) return ("")
     val parts = str.split(" ")
     val days = parts[0].toInt()
     val years = parts[2].toInt()
@@ -99,7 +99,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    if (!digital.contains(Regex("""^\d+\.\d+\.\d+$"""))) return ("")
+    if (!digital.matches(Regex("""^\d+\.\d+\.\d+$"""))) return ("")
     val parts = digital.split(".")
     val days = parts[0].toInt()
     val numberOfMonth = parts[1].toInt()
@@ -123,7 +123,13 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    if (!phone.matches(Regex("""^\+?\s*\d*\s*(\(?[ 0-9\-]+\)?)?[ 0-9\-]*$"""))) return ("")
+    if (phone.contains("(") && !phone.contains(")") ||
+        !phone.contains("(") && phone.contains(")")
+    ) return ""
+    return Regex("""[ ()\-]""").split(phone).joinToString(separator = "")
+}
 
 /**
  * Средняя
@@ -135,7 +141,16 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int { //проверить по котоеду могут ли быть входные с нарушением пробелов
+    if (!jumps.matches(Regex("""^[ \d%\-]*$"""))) return -1
+    val parts = Regex("""[ %\-]""").split(jumps)
+    var max = -1
+    for (i in 0 until parts.size) {
+        if (parts[i] != "" && parts[i].toInt() > max)
+            max = parts[i].toInt()
+    }
+    return max
+}
 
 /**
  * Сложная
@@ -148,7 +163,17 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int { // проверить по котоеду варианты, когда строка начинается с пробела
+    if (!jumps.matches(Regex("""^[ +\d%\-]*$"""))) return -1
+    val parts = Regex("""[ ]""").split(jumps)
+    var max = -1
+    for (i in 0 until parts.size - 1) {
+        if (parts[i + 1] == "+")
+            if (parts[i].toInt() > max)
+                max = parts[i].toInt()
+    }
+    return max
+}
 
 /**
  * Сложная
@@ -159,7 +184,20 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    if (!expression.matches(Regex("""^\d+[ +\d%\-]*$"""))) throw IllegalArgumentException(expression)
+    val parts = Regex("""[ ]""").split(expression)
+    var result = parts[0].toInt()
+    for (i in 1 until parts.size - 1 step 2) {
+        if (parts[i + 1].contains(Regex("""[+-]+""")))
+            throw IllegalArgumentException(expression)
+        when {
+            parts[i] == "+" -> result += parts[i + 1].toInt()
+            parts[i] == "-" -> result -= parts[i + 1].toInt()
+        }
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -170,7 +208,15 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val parts = Regex("""[ ]""").split(str)
+    var result = 0
+    for (i in 0 until parts.size - 1) {
+        if (parts[i].toLowerCase() == parts[i + 1].toLowerCase()) return result
+        else result += parts[i].length + 1
+    }
+    return -1
+}
 
 /**
  * Сложная
@@ -183,7 +229,20 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    if (description.isEmpty()) return ""
+    if (!description.matches(Regex("""^([А-Яа-я]+\s\d+\.?\d*;?\s?)*$"""))) return ""
+    val parts = Regex("""[; ]""").split(description)
+    var maxPrice = parts[1].toDouble()
+    var nameOfProduct = parts[0]
+    for (i in 4 until parts.size - 1 step 3) {
+        if (parts[i].toDouble() > maxPrice) {
+            maxPrice = parts[i].toDouble()
+            nameOfProduct = parts[i - 1]
+        }
+    }
+    return nameOfProduct
+}
 
 /**
  * Сложная
@@ -196,7 +255,39 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int { // доделать + подумать ещё
+    if (!roman.matches(Regex("""^(M{0,4})(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"""))) return -1
+    var result = 0
+    val parts =
+        Regex("""^(M{0,4})(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$""").find(roman)!!.groupValues
+    for (i in 1 until parts.size) {
+        result += if (parts[i].contains("M") && !parts[i].contains("C"))
+            parts[i].length * 1000 else subFromRoman(parts[i])
+    }
+    return result
+}
+
+fun subFromRoman(str: String): Int {
+    if (str.isEmpty()) return 0
+    val listOfNumbers1 = listOf("IX", "XC", "CM")
+    val listOfNumbers2 = listOf("IV", "XL", "CD")
+    val listOfNumbers3 = listOf("V", "L", "D")
+    val listOfNumbers4 = listOf("I", "X", "C")
+    val numbers = StringBuilder().append(str)
+    var result = 0
+    if (str in listOfNumbers1) {
+        return (10.0.pow(listOfNumbers1.indexOf(str))).toInt() * 9
+    }
+    if (str in listOfNumbers2) {
+        return (10.0.pow(listOfNumbers2.indexOf(str))).toInt() * 4
+    }
+    if (str[0].toString() in listOfNumbers3) {
+        result += (10.0.pow(listOfNumbers3.indexOf(str[0].toString()))).toInt() * 5
+        numbers.deleteCharAt(0)
+        if (numbers.isEmpty()) return result
+    }
+    return result + (10.0.pow(listOfNumbers4.indexOf(numbers[0].toString()))).toInt() * numbers.length
+}
 
 /**
  * Очень сложная
