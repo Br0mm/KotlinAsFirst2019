@@ -325,5 +325,58 @@ fun subFromRoman(str: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
-// сделать ленту с 0, сделать счётчик, указывающий где сейчас датчик и счётчик команд
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    if (!commands.matches(Regex("""^[ ><+-\[\]]+[^=]$"""))) throw IllegalArgumentException()
+    var bracketCounter = 0
+    for (char in commands) {
+        if (char == '[') bracketCounter++
+        if (char == ']') bracketCounter--
+        if (bracketCounter < 0) throw IllegalArgumentException()
+    }
+    if (bracketCounter != 0) throw IllegalArgumentException()
+    val tape = MutableList(cells) { 0 }
+    var positionOfSensor = cells / 2
+    var positionOfCommand = 0
+    var numberOfCommands = 0
+
+    fun cycles(symbol: Char): Int { // подфункция для выполненния операций, когда соманда '[' или ']'
+        var iterator = 0
+        if (symbol == '[' && tape[positionOfSensor] != 0) return positionOfCommand
+        if (symbol == ']' && tape[positionOfSensor] == 0) return positionOfCommand
+        if (symbol == '[' && tape[positionOfSensor] == 0) {
+            for (i in positionOfCommand + 1 until commands.length) {
+                if (commands[i] == '[') iterator++
+                if (commands[i] == ']') {
+                    if (iterator == 0) return i
+                    else iterator--
+                }
+            }
+        }
+        if (symbol == ']' && tape[positionOfSensor] != 0) {
+            for (i in (positionOfCommand - 1) downTo 0) {
+                if (commands[i] == ']') iterator++
+                if (commands[i] == '[') {
+                    if (iterator == 0) return i
+                    else iterator--
+                }
+            }
+        }
+        return 0
+    }
+
+    while (numberOfCommands < limit && positionOfCommand < commands.length) {
+        numberOfCommands++
+        when (commands[positionOfCommand]) {
+            '>' -> positionOfSensor++
+            '<' -> positionOfSensor--
+            '+' -> tape[positionOfSensor]++
+            '-' -> tape[positionOfSensor]--
+            ' ' -> numberOfCommands
+            else -> positionOfCommand =
+                cycles(commands[positionOfCommand])
+        }
+        positionOfCommand++
+        if (positionOfSensor > tape.size - 1 || positionOfSensor < 0) throw IllegalStateException()
+    }
+    return tape
+}
