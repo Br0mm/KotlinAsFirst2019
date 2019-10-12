@@ -124,7 +124,8 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    if (!phone.matches(Regex("""^\+?\s*\d*\s*(\(?[ 0-9\-]+\)?)?[ 0-9\-]*$"""))) return ("")
+    if (phone.matches(Regex("""^\s*$"""))) return ""
+    if (!phone.matches(Regex("""^\+?\s*\d*\s*(\(?[ 0-9\-]+\)?)?[ 0-9\-]*$"""))) return ""
     if (phone.contains("(") && !phone.contains(")") ||
         !phone.contains("(") && phone.contains(")")
     ) return ""
@@ -231,7 +232,7 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
     if (description.isEmpty()) return ""
-    if (!description.matches(Regex("""^([А-Яа-я]+\s\d+\.?\d*;?\s?)*$"""))) return ""
+    if (!description.matches(Regex("""^([А-Яа-яa-zA-Z]+\s\d+\.?\d*;?\s?)*${'$'}"""))) return ""
     val parts = Regex("""[; ]""").split(description)
     var maxPrice = parts[1].toDouble()
     var nameOfProduct = parts[0]
@@ -268,7 +269,7 @@ fun fromRoman(roman: String): Int { // доделать + подумать ещ�
 }
 
 fun subFromRoman(str: String): Int {
-    if (str.isEmpty()) return 0
+    if (str.isEmpty()) return -1
     val listOfNumbers1 = listOf("IX", "XC", "CM")
     val listOfNumbers2 = listOf("IV", "XL", "CD")
     val listOfNumbers3 = listOf("V", "L", "D")
@@ -326,6 +327,8 @@ fun subFromRoman(str: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val tape = MutableList(cells) { 0 }
+    if (commands.isEmpty()) return tape
     if (!commands.matches(Regex("""^[ ><+-\[\]]+[^=]$"""))) throw IllegalArgumentException()
     var bracketCounter = 0
     for (char in commands) {
@@ -334,7 +337,6 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         if (bracketCounter < 0) throw IllegalArgumentException()
     }
     if (bracketCounter != 0) throw IllegalArgumentException()
-    val tape = MutableList(cells) { 0 }
     var positionOfSensor = cells / 2
     var positionOfCommand = 0
     var numberOfCommands = 0
