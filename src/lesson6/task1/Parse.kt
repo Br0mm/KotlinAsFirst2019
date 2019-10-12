@@ -124,7 +124,7 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    if (phone.matches(Regex("""^\s*$"""))) return ""
+    if (phone.matches(Regex("""^\+?\s*$"""))) return ""
     if (!phone.matches(Regex("""^\+?\s*\d*\s*(\(?[ 0-9\-]+\)?)?[ 0-9\-]*$"""))) return ""
     if (phone.contains("(") && !phone.contains(")") ||
         !phone.contains("(") && phone.contains(")")
@@ -232,7 +232,7 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
     if (description.isEmpty()) return ""
-    if (!description.matches(Regex("""^([А-Яа-яa-zA-Z]+\s\d+\.?\d*;?\s?)*${'$'}"""))) return ""
+    if (!description.matches(Regex("""^(.+\s\d+\.?\d*;?\s?)*$"""))) return ""
     val parts = Regex("""[; ]""").split(description)
     var maxPrice = parts[1].toDouble()
     var nameOfProduct = parts[0]
@@ -256,7 +256,8 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int { // доделать + подумать ещё
+fun fromRoman(roman: String): Int {
+    if (roman.isEmpty()) return -1
     if (!roman.matches(Regex("""^(M{0,4})(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$"""))) return -1
     var result = 0
     val parts =
@@ -269,7 +270,7 @@ fun fromRoman(roman: String): Int { // доделать + подумать ещ�
 }
 
 fun subFromRoman(str: String): Int {
-    if (str.isEmpty()) return -1
+    if (str.isEmpty()) return 0
     val listOfNumbers1 = listOf("IX", "XC", "CM")
     val listOfNumbers2 = listOf("IV", "XL", "CD")
     val listOfNumbers3 = listOf("V", "L", "D")
@@ -289,6 +290,7 @@ fun subFromRoman(str: String): Int {
     }
     return result + (10.0.pow(listOfNumbers4.indexOf(numbers[0].toString()))).toInt() * numbers.length
 }
+
 
 /**
  * Очень сложная
@@ -329,7 +331,7 @@ fun subFromRoman(str: String): Int {
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val tape = MutableList(cells) { 0 }
     if (commands.isEmpty()) return tape
-    if (!commands.matches(Regex("""^[ ><+-\[\]]+[^=]$"""))) throw IllegalArgumentException()
+    if (!commands.matches(Regex("""^[ ><+-\[\]]*[^=]$"""))) throw IllegalArgumentException()
     var bracketCounter = 0
     for (char in commands) {
         if (char == '[') bracketCounter++

@@ -128,6 +128,7 @@ class Tests {
         assertEquals(694, fromRoman("DCXCIV"))
         assertEquals(49, fromRoman("XLIX"))
         assertEquals(-1, fromRoman("Z"))
+        assertEquals(-1, fromRoman(""))
     }
 
     @Test
@@ -151,5 +152,6 @@ class Tests {
         assertThrows(IllegalArgumentException::class.java) { computeDeviceCells(10, "===", 3) }
         assertThrows(IllegalArgumentException::class.java) { computeDeviceCells(10, "+>+>[+>", 3) }
         assertThrows(IllegalStateException::class.java) { computeDeviceCells(20, ">>>>>>>>>>>>>", 12) }
+        assertEquals(listOf(1), computeDeviceCells(1, "+", 500))
     }
 }
