@@ -3,7 +3,6 @@
 package lesson7.task1
 
 import java.io.File
-import java.lang.StringBuilder
 
 /**
  * Пример
@@ -56,7 +55,8 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val answer = mutableMapOf<String, Int>()
-    for (str in substrings) {
+    val setOfSubstrings = substrings.toSet()
+    for (str in setOfSubstrings) {
         answer.getOrPut(str, { 0 })
         for (line in File(inputName).readLines()) {
             for (i in 0..line.length - str.length) {
@@ -83,7 +83,34 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val outputFile = File(outputName).bufferedWriter()
+    var needChange = false
+    for (line in File(inputName).readLines()) {
+        for (char in line) {
+            var str = char
+            if (needChange) {
+                str = when (char) {
+                    'Я' -> 'А'
+                    'я' -> 'а'
+                    'Ы' -> 'И'
+                    'ы' -> 'и'
+                    'Ю' -> 'У'
+                    'ю' -> 'у'
+                    else -> char
+                }
+                needChange = false
+                outputFile.write("$str")
+                continue
+            }
+            if (char.toLowerCase() == 'ж' || char.toLowerCase() == 'ч'
+                || char.toLowerCase() == 'ш' || char.toLowerCase() == 'щ'
+            )
+                needChange = true
+            outputFile.write("$str")
+        }
+        outputFile.newLine()
+    }
+    outputFile.close()
 }
 
 /**
