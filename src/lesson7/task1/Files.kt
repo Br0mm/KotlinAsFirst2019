@@ -84,8 +84,9 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  */
 fun sibilants(inputName: String, outputName: String) {
     val outputFile = File(outputName).bufferedWriter()
-    var needChange = false
+    var needChange: Boolean
     for (line in File(inputName).readLines()) {
+        needChange = false
         for (char in line) {
             var str = char
             if (needChange) {
@@ -172,7 +173,50 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val outputFile = File(outputName).bufferedWriter()
+    val wordsInLine = mutableListOf<Int>()
+    val lengthOfLine = mutableListOf<Int>()
+    var counterOfWords: Int
+    var index = 0
+    var counterOfAddedSpaces: Int
+    val biggestLength: Int
+    var str: String
+    for (line in File(inputName).readLines()) {
+        wordsInLine.add(index, 0)
+        lengthOfLine.add(index, 0)
+        for (word in line.split(" ")) {
+            if (word.isEmpty()) continue
+            lengthOfLine[index] += word.length + 1
+            wordsInLine[index]++
+        }
+        if (lengthOfLine[index] > 0) lengthOfLine[index]--
+        index++
+    }
+    biggestLength = lengthOfLine.max()!!
+    index = 0
+    for (line in File(inputName).readLines()) {
+        str = line.trim()
+        counterOfAddedSpaces = 0
+        counterOfWords = 0
+        // идея - разбить строку по пробелу и составлять новую из слов, добавляя необходимое кол-во пробелов
+        for (word in str.split(" ")) {
+            if (word.isEmpty()) continue
+            counterOfWords++
+            outputFile.write(word)
+            if (counterOfWords < wordsInLine[index]) {
+                outputFile.write(" ")
+                for (i in 1..(biggestLength - lengthOfLine[index]) / (wordsInLine[index] - 1))
+                    outputFile.write(" ")
+                if ((biggestLength - lengthOfLine[index]) % (wordsInLine[index] - 1) > counterOfAddedSpaces) {
+                    outputFile.write(" ")
+                    counterOfAddedSpaces++
+                }
+            }
+        }
+        outputFile.newLine()
+        index++
+    }
+    outputFile.close()
 }
 
 /**
