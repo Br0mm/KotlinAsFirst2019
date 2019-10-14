@@ -99,8 +99,6 @@ fun sibilants(inputName: String, outputName: String) {
                     else -> char
                 }
                 needChange = false
-                outputFile.write("$str")
-                continue
             }
             if (char.toLowerCase() == 'ж' || char.toLowerCase() == 'ч'
                 || char.toLowerCase() == 'ш' || char.toLowerCase() == 'щ'
@@ -131,7 +129,19 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val outputFile = File(outputName).bufferedWriter()
+    var biggestLength = 0
+    var str: String
+    for (line in File(inputName).readLines()) {
+        if (line.trim().length > biggestLength) biggestLength = line.trim().length
+    }
+    for (line in File(inputName).readLines()) {
+        str = line.trim()
+        for (i in 1..(biggestLength - str.length) / 2) outputFile.write(" ")
+        outputFile.write(str)
+        outputFile.newLine()
+    }
+    outputFile.close()
 }
 
 /**
