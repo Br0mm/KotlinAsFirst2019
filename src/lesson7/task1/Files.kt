@@ -172,7 +172,7 @@ fun centerFile(inputName: String, outputName: String) {
  * 7) В самой длинной строке каждая пара соседних слов должна быть отделена В ТОЧНОСТИ одним пробелом
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
-fun alignFileByWidth(inputName: String, outputName: String) { // узнать почему не работает с пустым файлом
+fun alignFileByWidth(inputName: String, outputName: String) {
     val outputFile = File(outputName).bufferedWriter()
     val wordsInLine = mutableListOf<Int>()
     val lengthOfLine = mutableListOf<Int>()
@@ -198,7 +198,6 @@ fun alignFileByWidth(inputName: String, outputName: String) { // узнать п
         str = line.trim()
         counterOfAddedSpaces = 0
         counterOfWords = 0
-        // идея - разбить строку по пробелу и составлять новую из слов, добавляя необходимое кол-во пробелов
         for (word in str.split(" ")) {
             if (word.isEmpty()) continue
             counterOfWords++
@@ -237,7 +236,33 @@ fun alignFileByWidth(inputName: String, outputName: String) { // узнать п
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    val allWords = mutableMapOf<String, Int>()
+    val answer = mutableMapOf<String, Int>()
+    val values = mutableSetOf<Int>()
+    var counterOfWords = 20
+    for (line in File(inputName).readLines()) {
+        for (word in line.split(Regex("""[\s,.!?;«\-\d—»()*:]+"""))) {
+            if (word.isEmpty()) continue
+            allWords[word.toLowerCase()] = allWords.getOrPut(word.toLowerCase(), { 0 }) + 1
+        }
+    }
+    if (allWords.size < 20) return allWords
+    for ((key, value) in allWords) {
+        values.add(value)
+    }
+    for (value in values.sortedDescending()) {
+        for ((word, counter) in allWords) {
+            if (counter == value && counterOfWords > 0) {
+                answer[word] = counter
+                counterOfWords--
+            }
+            if (counterOfWords == 0) break
+        }
+        if (counterOfWords == 0) break
+    }
+    return answer
+}
 
 /**
  * Средняя
