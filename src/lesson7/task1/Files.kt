@@ -242,7 +242,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     val values = mutableSetOf<Int>()
     var counterOfWords = 20
     for (line in File(inputName).readLines()) {
-        for (word in line.split(Regex("""[\s,.!?;«\-\d—»()*:/]+"""))) {
+        for (word in line.split(Regex("""[^a-zA-ZА-Яа-яёЁ]"""))) {
             if (word.isEmpty()) continue
             allWords[word.toLowerCase()] = allWords.getOrPut(word.toLowerCase(), { 0 }) + 1
         }
