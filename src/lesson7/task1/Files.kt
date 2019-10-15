@@ -192,7 +192,7 @@ fun alignFileByWidth(inputName: String, outputName: String) { // узнать п
         if (lengthOfLine[index] > 0) lengthOfLine[index]--
         index++
     }
-    biggestLength = lengthOfLine.max()!!
+    biggestLength = lengthOfLine.max() ?: 0
     index = 0
     for (line in File(inputName).readLines()) {
         str = line.trim()
