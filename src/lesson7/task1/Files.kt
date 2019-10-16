@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.lang.StringBuilder
 
 /**
  * Пример
@@ -300,7 +301,21 @@ fun top20Words(inputName: String): Map<String, Int> {
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    val newDictionary = mutableMapOf<Char, String>()
+    val outputFile = File(outputName).bufferedWriter()
+    for ((key, value) in dictionary)
+        newDictionary[key.toLowerCase()] = value.toLowerCase()
+    for (line in File(inputName).readLines()) {
+        for (char in line) {
+            if (newDictionary.containsKey(char.toLowerCase())) {
+                if (char in 'A'..'Z' || char in 'А'..'Я')
+                    outputFile.write(newDictionary.getValue(char.toLowerCase()).capitalize())
+                else outputFile.write(newDictionary.getValue(char))
+            } else outputFile.write(char.toString().toLowerCase())
+        }
+        outputFile.newLine()
+    }
+    outputFile.close()
 }
 
 /**
@@ -328,7 +343,31 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val dictionary = mutableMapOf<Char, Int>()
+    val outputFile = File(outputName).bufferedWriter()
+    var maxLength = -1
+    var noRepeat = true
+    val str = StringBuilder()
+    for (line in File(inputName).readLines()) {
+        for (char in line) {
+            dictionary[char.toLowerCase()] = dictionary.getOrPut(char.toLowerCase(), { 0 }) + 1
+            if (dictionary[char.toLowerCase()]!! > 1) {
+                noRepeat = false
+            }
+        }
+        if (!noRepeat) continue
+        when {
+            line.length == maxLength -> str.append(", $line")
+            line.length > maxLength -> {
+                maxLength = line.length
+                str.clear()
+                str.append(line)
+            }
+        }
+        dictionary.clear()
+    }
+    outputFile.write(str.toString())
+    outputFile.close()
 }
 
 /**
