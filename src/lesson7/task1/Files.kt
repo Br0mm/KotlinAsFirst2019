@@ -238,10 +238,9 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  *
  */
 fun top20Words(inputName: String): Map<String, Int> {
-    val allWords = mutableMapOf<String, Int>()
-    val answer = mutableMapOf<String, Int>()
-    val values = mutableSetOf<Int>()
-    var counterOfWords = 20
+    var allWords = mutableMapOf<String, Int>()
+    var counterOfWords = 0
+    val topOfWords = mutableMapOf<String, Int>()
     for (line in File(inputName).readLines()) {
         for (word in line.split(Regex("""[^a-zA-ZА-Яа-яёЁ]"""))) {
             if (word.isEmpty()) continue
@@ -249,20 +248,14 @@ fun top20Words(inputName: String): Map<String, Int> {
         }
     }
     if (allWords.size < 20) return allWords
+    allWords = allWords.toList().sortedByDescending { it.second }.toMap().toMutableMap()
     for ((key, value) in allWords) {
-        values.add(value)
+        if (counterOfWords < 20) {
+            topOfWords[key] = value
+            counterOfWords++
+        } else break
     }
-    for (value in values.sortedDescending()) {
-        for ((word, counter) in allWords) {
-            if (counter == value && counterOfWords > 0) {
-                answer[word] = counter
-                counterOfWords--
-            }
-            if (counterOfWords == 0) break
-        }
-        if (counterOfWords == 0) break
-    }
-    return answer
+    return topOfWords
 }
 
 /**
@@ -309,8 +302,8 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         for (char in line) {
             if (newDictionary.containsKey(char.toLowerCase())) {
                 if (char in 'A'..'Z' || char in 'А'..'Я')
-                    outputFile.write(newDictionary.getValue(char.toLowerCase()).capitalize())
-                else outputFile.write(newDictionary.getValue(char))
+                    outputFile.write(newDictionary[char.toLowerCase()]!!.capitalize())
+                else outputFile.write(newDictionary[char]!!)
             } else outputFile.write(char.toString().toLowerCase())
         }
         outputFile.newLine()
@@ -355,7 +348,10 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
                 noRepeat = false
             }
         }
-        if (!noRepeat) continue
+        if (!noRepeat) {
+            dictionary.clear()
+            continue
+        }
         when {
             line.length == maxLength -> str.append(", $line")
             line.length > maxLength -> {
@@ -415,8 +411,89 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
-fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+fun markdownToHtmlSimple(inputName: String, outputName: String) { // переписать, т.к. ужасно выглядит
+    val outputFile = File(outputName).bufferedWriter()
+    outputFile.write("<html>\n<body>\n<p>\n")
+    var oneStar = true
+    var twoStars = true
+    var wave = true
+    val str = StringBuilder()
+    var previousChar = '0'
+    var counterOfStars = 0
+    for (line in File(inputName).readLines()) {
+        if (str.toString() == "\n" + "</p>") str.append("\n<p>\n")
+        outputFile.write(str.toString())
+        str.clear()
+        if (line.isEmpty()) {
+            str.append("\n</p>")
+            continue
+        }
+        for (char in line) {
+            if (char != '~' && previousChar == '~') {
+                str.append('~')
+                previousChar = char
+                continue
+
+            }
+            if (char == '~' && previousChar == '~') {
+                if (wave) {
+                    str.append("<s>")
+                    wave = false
+                    previousChar = '0'
+                    continue
+                } else {
+                    str.append("</s>")
+                    wave = true
+                    previousChar = '0'
+                    continue
+                }
+            }
+            if (previousChar == '*') {
+                if (char == '*')
+                    if (twoStars) {
+                        str.append("<b>")
+                        twoStars = false
+                        counterOfStars -= 2
+                        previousChar = '0'
+                        continue
+                    } else {
+                        str.append("</b>")
+                        twoStars = true
+                        counterOfStars -= 2
+                        previousChar = '0'
+                        continue
+                    }
+                if (oneStar) {
+                    if (char != '~') str.append("<i>$char")
+                    else str.append("<i>")
+                    oneStar = false
+                    counterOfStars -= 1
+                    previousChar = char
+                    continue
+                } else {
+                    if (char != '~') str.append("</i>$char")
+                    else str.append("</i>")
+                    oneStar = true
+                    counterOfStars -= 1
+                    previousChar = char
+                    continue
+                }
+            }
+            if (char == '~') {
+                previousChar = char
+                continue
+            }
+            if (char == '*') {
+                counterOfStars += 1
+                previousChar = char
+                continue
+            }
+            str.append(char)
+            previousChar = char
+        }
+    }
+    outputFile.write("$str\n</p>\n</body>\n</html>")
+    outputFile.close()
 }
 
 /**
