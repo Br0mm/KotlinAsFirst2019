@@ -409,91 +409,53 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
-fun markdownToHtmlSimple(inputName: String, outputName: String) { // переписать, т.к. кошмарно написано
+fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val outputFile = File(outputName).bufferedWriter()
     outputFile.write("<html>\n<body>\n<p>\n")
-    var oneStar = true
-    var twoStars = true
-    var wave = true
     val str = StringBuilder()
-    var previousChar = '0'
-    var counterOfStars = 0
+    val newLine = StringBuilder()
     for (line in File(inputName).readLines()) {
-        if (str.toString() == "\n" + "</p>") str.append("\n<p>\n")
-        outputFile.write(str.toString())
-        str.clear()
-        if (line.isEmpty()) {
-            str.append("\n</p>")
-            continue
-        }
-        for (char in line) {
-            if (char == '~' || char == '*' || previousChar == '~' || previousChar == '*') {
-                if (char != '~' && previousChar == '~') {
-                    str.append("~$char")
-                    previousChar = char
-                    continue
-                }
-                if (char == '~' && previousChar == '~') {
-                    if (wave) {
-                        str.append("<s>")
-                        wave = false
-                        previousChar = '0'
-                        continue
-                    } else {
-                        str.append("</s>")
-                        wave = true
-                        previousChar = '0'
-                        continue
-                    }
-                }
-                if (previousChar == '*') {
-                    if (char == '*')
-                        if (twoStars) {
-                            str.append("<b>")
-                            twoStars = false
-                            counterOfStars -= 2
-                            previousChar = '0'
-                            continue
-                        } else {
-                            str.append("</b>")
-                            twoStars = true
-                            counterOfStars -= 2
-                            previousChar = '0'
-                            continue
-                        }
-                    if (oneStar) {
-                        if (char != '~') str.append("<i>$char")
-                        else str.append("<i>")
-                        oneStar = false
-                        counterOfStars -= 1
-                        previousChar = char
-                        continue
-                    } else {
-                        if (char != '~') str.append("</i>$char")
-                        else str.append("</i>")
-                        oneStar = true
-                        counterOfStars -= 1
-                        previousChar = char
-                        continue
-                    }
-                }
-                if (char == '~') {
-                    previousChar = char
-                    continue
-                }
-                if (char == '*') {
-                    counterOfStars += 1
-                    previousChar = char
-                    continue
-                }
-            } else {
-                str.append(char)
-                previousChar = char
-            }
+        str.append(line)
+        str.append("\n")
+    }
+    newLine.append(subMarkdownToHtmlSimple(str.toString().removeSuffix("\n"), "~~", "<s>", "</s>"))
+    str.clear()
+    str.append(subMarkdownToHtmlSimple(newLine.toString(), "**", "<b>", "</b>"))
+    newLine.clear()
+    newLine.append(subMarkdownToHtmlSimple(str.toString(), "*", "<i>", "</i>"))
+    for (line in newLine.split("\n")) {
+        if (line.isEmpty()) outputFile.write("\n</p>\n<p>\n")
+        outputFile.write(line)
+    }
+    outputFile.write("\n</p>\n</body>\n</html>")
+    outputFile.close()
+}
+fun subMarkdownToHtmlSimple(str: String, splitter: String, openTag: String, closeTag: String): StringBuilder {
+    val newLine = StringBuilder()
+    var counterOfTags = 0
+    var flagOfTag = true
+    val a: String
+    for (line in str.split(splitter)) {
+        newLine.append(line)
+        counterOfTags++
+        flagOfTag = if (flagOfTag) {
+            newLine.append(openTag)
+            false
+        } else {
+            newLine.append(closeTag)
+            true
         }
     }
-    outputFile.write("$str\n</p>\n</body>\n</html>")
-    outputFile.close()
+    if (counterOfTags % 2 == 1) {
+        a = newLine.toString()
+        newLine.clear()
+        newLine.append(a.removeSuffix(openTag))
+    } else {
+        a = newLine.toString()
+        newLine.clear()
+        newLine.append(a.removeSuffix(openTag).removeSuffix(closeTag))
+    }
+    return newLine
 }
 
 /**
