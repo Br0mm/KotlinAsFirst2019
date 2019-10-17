@@ -430,6 +430,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     outputFile.write("\n</p>\n</body>\n</html>")
     outputFile.close()
 }
+
 fun subMarkdownToHtmlSimple(str: String, splitter: String, openTag: String, closeTag: String): StringBuilder {
     val newLine = StringBuilder()
     var counterOfTags = 0
