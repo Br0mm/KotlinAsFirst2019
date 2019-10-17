@@ -339,27 +339,25 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val dictionary = mutableMapOf<Char, Int>()
     val outputFile = File(outputName).bufferedWriter()
     var maxLength = -1
-    var noRepeat = true
+    var noRepeat: Boolean
     val str = StringBuilder()
     for (line in File(inputName).readLines()) {
+        noRepeat = true
         for (char in line) {
             dictionary[char.toLowerCase()] = dictionary.getOrPut(char.toLowerCase(), { 0 }) + 1
             if (dictionary[char.toLowerCase()]!! > 1) {
                 noRepeat = false
             }
         }
-        if (!noRepeat) {
-            dictionary.clear()
-            continue
-        }
-        when {
-            line.length == maxLength -> str.append(", $line")
-            line.length > maxLength -> {
-                maxLength = line.length
-                str.clear()
-                str.append(line)
+        if (noRepeat)
+            when {
+                line.length == maxLength -> str.append(", $line")
+                line.length > maxLength -> {
+                    maxLength = line.length
+                    str.clear()
+                    str.append(line)
+                }
             }
-        }
         dictionary.clear()
     }
     outputFile.write(str.toString())
@@ -411,7 +409,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
-fun markdownToHtmlSimple(inputName: String, outputName: String) { // переписать, т.к. ужасно выглядит
+fun markdownToHtmlSimple(inputName: String, outputName: String) { // переписать, т.к. кошмарно написано
     val outputFile = File(outputName).bufferedWriter()
     outputFile.write("<html>\n<body>\n<p>\n")
     var oneStar = true
@@ -429,67 +427,69 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) { // переп�
             continue
         }
         for (char in line) {
-            if (char != '~' && previousChar == '~') {
-                str.append('~')
-                previousChar = char
-                continue
-
-            }
-            if (char == '~' && previousChar == '~') {
-                if (wave) {
-                    str.append("<s>")
-                    wave = false
-                    previousChar = '0'
-                    continue
-                } else {
-                    str.append("</s>")
-                    wave = true
-                    previousChar = '0'
+            if (char == '~' || char == '*' || previousChar == '~' || previousChar == '*') {
+                if (char != '~' && previousChar == '~') {
+                    str.append("~$char")
+                    previousChar = char
                     continue
                 }
-            }
-            if (previousChar == '*') {
-                if (char == '*')
-                    if (twoStars) {
-                        str.append("<b>")
-                        twoStars = false
-                        counterOfStars -= 2
+                if (char == '~' && previousChar == '~') {
+                    if (wave) {
+                        str.append("<s>")
+                        wave = false
                         previousChar = '0'
                         continue
                     } else {
-                        str.append("</b>")
-                        twoStars = true
-                        counterOfStars -= 2
+                        str.append("</s>")
+                        wave = true
                         previousChar = '0'
                         continue
                     }
-                if (oneStar) {
-                    if (char != '~') str.append("<i>$char")
-                    else str.append("<i>")
-                    oneStar = false
-                    counterOfStars -= 1
-                    previousChar = char
-                    continue
-                } else {
-                    if (char != '~') str.append("</i>$char")
-                    else str.append("</i>")
-                    oneStar = true
-                    counterOfStars -= 1
+                }
+                if (previousChar == '*') {
+                    if (char == '*')
+                        if (twoStars) {
+                            str.append("<b>")
+                            twoStars = false
+                            counterOfStars -= 2
+                            previousChar = '0'
+                            continue
+                        } else {
+                            str.append("</b>")
+                            twoStars = true
+                            counterOfStars -= 2
+                            previousChar = '0'
+                            continue
+                        }
+                    if (oneStar) {
+                        if (char != '~') str.append("<i>$char")
+                        else str.append("<i>")
+                        oneStar = false
+                        counterOfStars -= 1
+                        previousChar = char
+                        continue
+                    } else {
+                        if (char != '~') str.append("</i>$char")
+                        else str.append("</i>")
+                        oneStar = true
+                        counterOfStars -= 1
+                        previousChar = char
+                        continue
+                    }
+                }
+                if (char == '~') {
                     previousChar = char
                     continue
                 }
-            }
-            if (char == '~') {
+                if (char == '*') {
+                    counterOfStars += 1
+                    previousChar = char
+                    continue
+                }
+            } else {
+                str.append(char)
                 previousChar = char
-                continue
             }
-            if (char == '*') {
-                counterOfStars += 1
-                previousChar = char
-                continue
-            }
-            str.append(char)
-            previousChar = char
         }
     }
     outputFile.write("$str\n</p>\n</body>\n</html>")

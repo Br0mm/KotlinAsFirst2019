@@ -212,7 +212,7 @@ Basic, Ruby, Swift.
     @Tag("Normal")
     fun chooseLongestChaoticWord() {
         chooseLongestChaoticWord("input/chaotic_in1.txt", "temp.txt")
-        assertFileContent("temp.txt", "Карминовый, Некрасивый")
+        assertFileContent("temp.txt", "а")
         File("temp.txt").delete()
     }
 
@@ -224,11 +224,13 @@ Basic, Ruby, Swift.
                     <html>
                         <body>
                             <p>
-                                Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-                                Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+                                #_iqe/~DaK~C8C)r4h[;LG`<s>WSz98f4mWoplT-j@})LDrkgnbOU4J.S\\c,Ff,:Y)kap1hF\"YLTy=,PuzI;kyLv(?wGDnB4</s>IE8<b>ixPq0ld[[A|1<i>8n9h_</i></b><i>Oc;Jo<s>A.r]'SFLi8Bz3:Tc[h&88</s>C6v8My#<s>^OhM9tRRq7!\\7=:<)</s></i><s>KnY[OdbICuri5jR;YDY/'R<i>6_S]\"VJp~emz3Fm(/%JFh<b>U_</b>T9uJ(Bdd-<l:NvW8</i>z4k&&rv'c[(~LplSu.//?A4YsTR<NHG3#PdjL@lNuX(8></s>%0,\\Rg<i>K4(<z[-M<b>d?34w2?;`Z/cSnrfuEY?f)?218)2w,<'^</b>;ip<b>QfQ'3@~-OxAs|]'/=Tz!GFd[OLA3gohVuKpQ2wBToB|=2\\p)8&4BDROY'uL\\U[Ae[WUtQDt:k4?)UGHt[/4<s>xs\"8JO6JK{`H1,^Z}9(k:7eCRSvmU|OMyUk</s>5P#->G^u)MG[E-!e-Zu=6w2_iZ}?3Y(wGI@&]vDl<s>)iXv9m5V<^oHCJtyPSXd0=9V>>z)D7fE(a|?{HwAH32dd/u=6<'wt]2epM>j{xul}lN2jqfPiIJeZztNi|sNpPI4)d8mx4H[SP{vL7##F#W5)Y)</s>0</b></i><b>^c-C'J6tFxhTZ|ea3\\xP7tLbH4Y'-06m9S?&_2P#i5]%\\RAJ42TAPeM{7?QIwr|b^QhVT.f8<^%j5'0KzqqnN<F=%O4@V^[N|I62<i>rngy<1M3G,[
                             </p>
                             <p>
-                                Suspendisse <s>et elit in enim tempus iaculis</s>.
+                                HCFgh)mgyQM[`KY
+                            </p>
+                            <p>
+                                Gmo'>:[8J10/G(%5;)pT{Tl&yf`}ldwU</i>t!8!xRR)T{Q.eDd00vxa<i>bo;s_ZUAg!t:=yLzW|%4sWE4G,!dJZik;C<s>3\\3?>uMj</s></i><s>|T&ZZGIy3<H)w\\GSY2:z/H,vo2c\"9m[5q>BV^D2%w\\4</s></b><s>@B|%Ow?O^|9u<Qj<i>y0y\\Hw}hmvOlYX\"#I)3q,A</i>e76vwEIn_/0MSoYeCfd\"-^)I=wvd2cS?u#,er?XmH~G6I.^xDI%t/>cL7&aK}Ry^G(aA</s>TkIh-\\Fpb<i>)]fQ\"V!.;zHug8=ya}cfKJ%R9Q92CJ]xDmJ<xQNRy;8`?#uElNaO~Nne#z5</i>~~b~A-?'1=#=Qy}:A<;0X?AW83R9c_)H>Yol*.RUqq7cYy{{I>{>T?D4'l
                             </p>
                         </body>
                     </html>
