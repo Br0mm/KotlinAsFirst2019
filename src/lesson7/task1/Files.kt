@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.File
 import java.lang.StringBuilder
+import kotlin.math.pow
 
 /**
  * Пример
@@ -600,7 +601,40 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val outputFile = File(outputName).bufferedWriter()
+    val lhvString = lhv.toString()
+    val rhvString = rhv.toString()
+    val lengthOfNumbers = rhvString.length + lhvString.length
+    var number = rhv
+    for (i in 0 until rhvString.length) {
+        outputFile.write(" ")
+    }
+    outputFile.write("$lhvString\n*")
+    for (i in 1 until lhvString.length) {
+        outputFile.write(" ")
+    }
+    outputFile.write("$rhvString\n")
+    for (i in 0 until lengthOfNumbers) {
+        outputFile.write("-")
+    }
+    outputFile.write("\n")
+    for (i in 0 until rhvString.length) {
+        for (j in 0 until rhvString.length - i) {
+            when {
+                i == 0 -> outputFile.write(" ")
+                j == 0 -> outputFile.write("+")
+                else -> outputFile.write(" ")
+            }
+        }
+        outputFile.write("${number % 10 * lhv}\n")
+        number /= 10
+    }
+    for (i in 0 until lengthOfNumbers) {
+        outputFile.write("-")
+    }
+    if ((lhv * rhv).toString().length == lengthOfNumbers) outputFile.write("\n${lhv * rhv}")
+    else outputFile.write("\n ${lhv * rhv}")
+    outputFile.close()
 }
 
 
@@ -624,7 +658,42 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
-fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переписать получше
+    val outputFile = File(outputName).bufferedWriter()
+    val lhvString = lhv.toString()
+    val rhvString = rhv.toString()
+    var digit = lhv
+    var counter = 0
+    var remainder: Int
+    var position = 1
+    while (digit / 10 > rhv) {
+        counter++
+        digit /= 10
+    }
+    remainder = digit % rhv
+    outputFile.write(" $lhvString | $rhvString\n-${digit - remainder}")
+    for (i in (digit).toString().length until lhvString.length + 3) outputFile.write(" ")
+    outputFile.write("${lhv / rhv}\n")
+    for (i in 0..(digit).toString().length) outputFile.write("-")
+    outputFile.write("\n")
+    position += digit.toString().length - remainder.toString().length
+    for (i in digit.toString().length until lhvString.length) {
+        counter--
+        for (j in 0 until position) outputFile.write(" ")
+        outputFile.write("$remainder${lhv / 10.0.pow(counter).toInt() % 10}\n")
+        if (remainder == 0) position++
+        digit = remainder * 10 + lhv / 10.0.pow(counter).toInt() % 10
+        remainder = digit % rhv
+        position += digit.toString().length - (digit - remainder).toString().length - 1
+        for (j in 0 until position) outputFile.write(" ")
+        outputFile.write("-${digit - remainder}\n")
+        for (j in 0 until position) outputFile.write(" ")
+        for (j in 0..(digit - remainder).toString().length) outputFile.write("-")
+        outputFile.write("\n")
+        if (remainder == 0) position++
+    }
+    for (j in 0..(lhvString.length - (lhv % rhv).toString().length)) outputFile.write(" ")
+    outputFile.write("$remainder")
+    outputFile.close()
 }
 
