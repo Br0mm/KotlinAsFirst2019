@@ -604,36 +604,37 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val outputFile = File(outputName).bufferedWriter()
     val lhvString = lhv.toString()
     val rhvString = rhv.toString()
-    val lengthOfNumbers = rhvString.length + lhvString.length
+    var digit: Int
+    val lengthOfMultiplication = (rhv * lhv).toString().length
     var number = rhv
-    for (i in 0 until rhvString.length) {
+    for (i in 0..lengthOfMultiplication - lhvString.length) {
         outputFile.write(" ")
     }
     outputFile.write("$lhvString\n*")
-    for (i in 1 until lhvString.length) {
+    for (i in 1..lengthOfMultiplication - rhvString.length) {
         outputFile.write(" ")
     }
     outputFile.write("$rhvString\n")
-    for (i in 0 until lengthOfNumbers) {
+    for (i in 0..lengthOfMultiplication) {
         outputFile.write("-")
     }
     outputFile.write("\n")
     for (i in 0 until rhvString.length) {
-        for (j in 0 until rhvString.length - i) {
+        digit = number % 10 * lhv
+        for (j in 0 until lengthOfMultiplication - (digit.toString().length - 1 + i)) {
             when {
                 i == 0 -> outputFile.write(" ")
                 j == 0 -> outputFile.write("+")
                 else -> outputFile.write(" ")
             }
         }
-        outputFile.write("${number % 10 * lhv}\n")
+        outputFile.write("$digit\n")
         number /= 10
     }
-    for (i in 0 until lengthOfNumbers) {
+    for (i in 0..lengthOfMultiplication) {
         outputFile.write("-")
     }
-    if ((lhv * rhv).toString().length == lengthOfNumbers) outputFile.write("\n${lhv * rhv}")
-    else outputFile.write("\n ${lhv * rhv}")
+    outputFile.write("\n ${lhv * rhv}")
     outputFile.close()
 }
 
@@ -666,7 +667,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
     var counter = 0
     var remainder: Int
     var position = 1
-    while (digit / 10 > rhv) {
+    while (digit / 10 >= rhv) {
         counter++
         digit /= 10
     }
