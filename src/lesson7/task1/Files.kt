@@ -672,15 +672,40 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
         digit /= 10
     }
     remainder = digit % rhv
-    outputFile.write(" $lhvString | $rhvString\n-${digit - remainder}")
+    outputFile.write(" $lhvString | $rhvString\n")
+    if (digit.toString().length > (digit - remainder).toString().length) outputFile.write(" ")
+    outputFile.write("-${digit - remainder}")
     for (i in (digit).toString().length until lhvString.length + 3) outputFile.write(" ")
     outputFile.write("${lhv / rhv}\n")
-    for (i in 0..(digit).toString().length) outputFile.write("-")
+    if (digit.toString().length > (digit - remainder).toString().length) outputFile.write(" ")
+    for (i in 0..(digit - remainder).toString().length) outputFile.write("-")
     outputFile.write("\n")
-    if (remainder == 0) position--
+    position += digit.toString().length - remainder.toString().length
     for (i in digit.toString().length until lhvString.length) {
         counter--
-        if (remainder == 0) position += digit.toString().length
+        for (j in 0 until position) outputFile.write(" ")
+        outputFile.write("$remainder${lhv / 10.0.pow(counter).toInt() % 10}\n")
+        if (remainder == 0) position++
+        digit = remainder * 10 + lhv / 10.0.pow(counter).toInt() % 10
+        remainder = digit % rhv
+        position += digit.toString().length - remainder.toString().length
+        if (digit.toString().length > (digit - remainder).toString().length) for (j in 0 until position) outputFile.write(" ")
+        else for (j in 0 until position - (digit - remainder).toString().length) outputFile.write(" ")
+        outputFile.write("-${digit - remainder}\n")
+        if (digit.toString().length > (digit - remainder).toString().length) for (j in 0 until position) outputFile.write(" ")
+        else for (j in 0 until position - (digit - remainder).toString().length) outputFile.write(" ")
+        for (j in 0..(digit - remainder).toString().length) outputFile.write("-")
+        outputFile.write("\n")
+    }
+    for (j in 0..(lhvString.length - (lhv % rhv).toString().length)) outputFile.write(" ")
+    outputFile.write("$remainder")
+    outputFile.close()
+}
+
+/*
+ for (i in digit.toString().length until lhvString.length) {
+        counter--
+        if (remainder == 0 && digit - remainder != 0) position += digit.toString().length
         else {
             if (position == 0) position += 1
             position += digit.toString().length - remainder.toString().length
@@ -698,8 +723,4 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
         outputFile.write("\n")
         if (digit - remainder == 0 && digit.toString().length == 1) position++
     }
-    for (j in 0..(lhvString.length - (lhv % rhv).toString().length)) outputFile.write(" ")
-    outputFile.write("$remainder")
-    outputFile.close()
-}
-
+ */
