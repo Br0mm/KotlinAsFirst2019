@@ -672,53 +672,33 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
     remainder = digit % rhv
     outputFile.write(" $lhv | $rhv\n")
     if (digit.toString().length > (digit - remainder).toString().length) outputFile.write(" ")
-    outputFile.write("-${digit - remainder}")
-    for (i in (digit).toString().length until lhv.toString().length + 3) outputFile.write(" ")
-    outputFile.write("${lhv / rhv}\n")
+    outputFile.write(
+        "-${digit - remainder}" +
+                " ".repeat(lhv.toString().length + 3 - digit.toString().length) +
+                "${lhv / rhv}\n"
+    )
     if (digit.toString().length > (digit - remainder).toString().length) outputFile.write(" ")
-    outputFile.write("-".repeat((digit - remainder).toString().length + 1))
-    outputFile.write("\n")
-    positionOfDigit += digit.toString().length - remainder.toString().length
+    outputFile.write("-".repeat((digit - remainder).toString().length + 1) + "\n")
+    positionOfDigit += digit.toString().length - remainder.toString().length //нахожу сколько мне нужно пробелов, чтобы выводить digit в правильном месте
     for (i in digit.toString().length until lhv.toString().length) {
         counter--
         outputFile.write(" ".repeat(positionOfDigit) + "$remainder${lhv / 10.0.pow(counter).toInt() % 10}\n")
-        if (remainder == 0) positionOfDigit++
-        digit = remainder * 10 + lhv / 10.0.pow(counter).toInt() % 10
-        remainder = digit % rhv
-        if (digit.toString().length > (digit - remainder).toString().length)
+        if (remainder == 0) positionOfDigit++ // добавляю к positionOfDigit 1, если остаток от деления был 0
+        digit = remainder * 10 + lhv / 10.0.pow(counter).toInt() % 10 //нахожу часть числа, которя будет делиться на rhv
+        remainder = digit % rhv // нахожу остаток после деления части числа на rhv
+        if (digit.toString().length > (digit - remainder).toString().length) { // нахожу сколько мне нужно пробелов, в зависимости от вычитаемой части
             outputFile.write(" ".repeat(positionOfDigit))
-        else outputFile.write(" ".repeat(positionOfDigit - 1))
-        outputFile.write("-${digit - remainder}\n")
-        if (digit.toString().length > (digit - remainder).toString().length)
+            outputFile.write("-${digit - remainder}\n")
             outputFile.write(" ".repeat(positionOfDigit))
-        else outputFile.write(" ".repeat(positionOfDigit - 1))
+        } else {
+            outputFile.write(" ".repeat(positionOfDigit - 1))
+            outputFile.write("-${digit - remainder}\n")
+            outputFile.write(" ".repeat(positionOfDigit - 1))
+        }
         outputFile.write("-".repeat((digit - remainder).toString().length + 1) + "\n")
-        positionOfDigit += digit.toString().length - remainder.toString().length
+        positionOfDigit += digit.toString().length - remainder.toString().length //нахожу сколько мне нужно пробелов, чтобы выводить digit в правильном месте
     }
     for (j in 0..(lhv.toString().length - (lhv % rhv).toString().length)) outputFile.write(" ")
     outputFile.write("$remainder")
     outputFile.close()
 }
-
-/*
- for (i in digit.toString().length until lhvString.length) {
-        counter--
-        if (remainder == 0 && digit - remainder != 0) position += digit.toString().length
-        else {
-            if (position == 0) position += 1
-            position += digit.toString().length - remainder.toString().length
-        }
-        for (j in 0 until position) outputFile.write(" ")
-        outputFile.write("$remainder${lhv / 10.0.pow(counter).toInt() % 10}\n")
-        if (remainder == 0) position++
-        digit = remainder * 10 + lhv / 10.0.pow(counter).toInt() % 10
-        remainder = digit % rhv
-        position += digit.toString().length - (digit - remainder).toString().length - 1
-        for (j in 0 until position) outputFile.write(" ")
-        outputFile.write("-${digit - remainder}\n")
-        for (j in 0 until position) outputFile.write(" ")
-        for (j in 0..(digit - remainder).toString().length) outputFile.write("-")
-        outputFile.write("\n")
-        if (digit - remainder == 0 && digit.toString().length == 1) position++
-    }
- */
