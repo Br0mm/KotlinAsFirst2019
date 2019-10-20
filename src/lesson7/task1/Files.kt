@@ -453,9 +453,9 @@ fun subMarkdownToHtmlSimple(str: String, splitter: String, openTag: String, clos
         newLine.clear()
         newLine.append(a.removeSuffix(openTag))
     } else {
-        a = newLine.toString()
+        a = newLine.toString().removeSuffix(openTag).removeSuffix(closeTag)
         newLine.clear()
-        newLine.append(a.removeSuffix(openTag).removeSuffix(closeTag))
+        newLine.append(a)
     }
     return newLine
 }
@@ -665,6 +665,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
     val rhvString = rhv.toString()
     var digit = lhv
     var counter = 0
+    var k = false
     var remainder: Int
     var position = 1
     while (digit / 10 >= rhv) {
@@ -677,9 +678,11 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
     outputFile.write("${lhv / rhv}\n")
     for (i in 0..(digit).toString().length) outputFile.write("-")
     outputFile.write("\n")
-    position += digit.toString().length - remainder.toString().length
+    if (remainder == 0) position--
     for (i in digit.toString().length until lhvString.length) {
         counter--
+        position += if (remainder == 0) digit.toString().length
+        else digit.toString().length - remainder.toString().length
         for (j in 0 until position) outputFile.write(" ")
         outputFile.write("$remainder${lhv / 10.0.pow(counter).toInt() % 10}\n")
         if (remainder == 0) position++
@@ -691,7 +694,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
         for (j in 0 until position) outputFile.write(" ")
         for (j in 0..(digit - remainder).toString().length) outputFile.write("-")
         outputFile.write("\n")
-        if (remainder == 0) position += digit.toString().length
+        if (position == 0) position++
         if (digit - remainder == 0 && digit.toString().length == 1) position++
     }
     for (j in 0..(lhvString.length - (lhv % rhv).toString().length)) outputFile.write(" ")
