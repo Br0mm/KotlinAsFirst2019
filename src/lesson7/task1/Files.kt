@@ -691,7 +691,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
         for (j in 0 until position) outputFile.write(" ")
         for (j in 0..(digit - remainder).toString().length) outputFile.write("-")
         outputFile.write("\n")
-        if (remainder == 0) position++
+        if (remainder == 0) position += digit.toString().length
+        if (digit - remainder == 0 && digit.toString().length == 1) position++
     }
     for (j in 0..(lhvString.length - (lhv % rhv).toString().length)) outputFile.write(" ")
     outputFile.write("$remainder")
