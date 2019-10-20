@@ -687,15 +687,16 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
         digit = remainder * 10 + lhv / 10.0.pow(counter).toInt() % 10 //нахожу часть числа, которя будет делиться на rhv
         remainder = digit % rhv // нахожу остаток после деления части числа на rhv
         if (digit.toString().length > (digit - remainder).toString().length) { // нахожу сколько мне нужно пробелов, в зависимости от вычитаемой части
-            outputFile.write(" ".repeat(positionOfDigit))
+            outputFile.write(" ".repeat(positionOfDigit + (digit.toString().length - (digit - remainder).toString().length) - 1))
             outputFile.write("-${digit - remainder}\n")
             outputFile.write(" ".repeat(positionOfDigit))
+            outputFile.write("-".repeat(digit.toString().length - (digit - remainder).toString().length + 1) + "\n")
         } else {
             outputFile.write(" ".repeat(positionOfDigit - 1))
             outputFile.write("-${digit - remainder}\n")
             outputFile.write(" ".repeat(positionOfDigit - 1))
+            outputFile.write("-".repeat((digit - remainder).toString().length + 1) + "\n")
         }
-        outputFile.write("-".repeat((digit - remainder).toString().length + 1) + "\n")
         positionOfDigit += digit.toString().length - remainder.toString().length //нахожу сколько мне нужно пробелов, чтобы выводить digit в правильном месте
     }
     for (j in 0..(lhv.toString().length - (lhv % rhv).toString().length)) outputFile.write(" ")
