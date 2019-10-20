@@ -661,43 +661,41 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переписать получше
     val outputFile = File(outputName).bufferedWriter()
-    val lhvString = lhv.toString()
-    val rhvString = rhv.toString()
     var digit = lhv
     var counter = 0
     var remainder: Int
-    var position = 1
+    var positionOfDigit = 1
     while (digit / 10 >= rhv) {
         counter++
         digit /= 10
     }
     remainder = digit % rhv
-    outputFile.write(" $lhvString | $rhvString\n")
+    outputFile.write(" $lhv | $rhv\n")
     if (digit.toString().length > (digit - remainder).toString().length) outputFile.write(" ")
     outputFile.write("-${digit - remainder}")
-    for (i in (digit).toString().length until lhvString.length + 3) outputFile.write(" ")
+    for (i in (digit).toString().length until lhv.toString().length + 3) outputFile.write(" ")
     outputFile.write("${lhv / rhv}\n")
     if (digit.toString().length > (digit - remainder).toString().length) outputFile.write(" ")
-    for (i in 0..(digit - remainder).toString().length) outputFile.write("-")
+    outputFile.write("-".repeat((digit - remainder).toString().length + 1))
     outputFile.write("\n")
-    position += digit.toString().length - remainder.toString().length
-    for (i in digit.toString().length until lhvString.length) {
+    positionOfDigit += digit.toString().length - remainder.toString().length
+    for (i in digit.toString().length until lhv.toString().length) {
         counter--
-        for (j in 0 until position) outputFile.write(" ")
-        outputFile.write("$remainder${lhv / 10.0.pow(counter).toInt() % 10}\n")
-        if (remainder == 0) position++
+        outputFile.write(" ".repeat(positionOfDigit) + "$remainder${lhv / 10.0.pow(counter).toInt() % 10}\n")
+        if (remainder == 0) positionOfDigit++
         digit = remainder * 10 + lhv / 10.0.pow(counter).toInt() % 10
         remainder = digit % rhv
-        position += digit.toString().length - remainder.toString().length
-        if (digit.toString().length > (digit - remainder).toString().length) for (j in 0 until position) outputFile.write(" ")
-        else for (j in 0 until position - (digit - remainder).toString().length) outputFile.write(" ")
+        if (digit.toString().length > (digit - remainder).toString().length)
+            outputFile.write(" ".repeat(positionOfDigit))
+        else outputFile.write(" ".repeat(positionOfDigit - 1))
         outputFile.write("-${digit - remainder}\n")
-        if (digit.toString().length > (digit - remainder).toString().length) for (j in 0 until position) outputFile.write(" ")
-        else for (j in 0 until position - (digit - remainder).toString().length) outputFile.write(" ")
-        for (j in 0..(digit - remainder).toString().length) outputFile.write("-")
-        outputFile.write("\n")
+        if (digit.toString().length > (digit - remainder).toString().length)
+            outputFile.write(" ".repeat(positionOfDigit))
+        else outputFile.write(" ".repeat(positionOfDigit - 1))
+        outputFile.write("-".repeat((digit - remainder).toString().length + 1) + "\n")
+        positionOfDigit += digit.toString().length - remainder.toString().length
     }
-    for (j in 0..(lhvString.length - (lhv % rhv).toString().length)) outputFile.write(" ")
+    for (j in 0..(lhv.toString().length - (lhv % rhv).toString().length)) outputFile.write(" ")
     outputFile.write("$remainder")
     outputFile.close()
 }
