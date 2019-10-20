@@ -670,15 +670,25 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
         digit /= 10
     }
     remainder = digit % rhv
-    outputFile.write(" $lhv | $rhv\n")
-    if (digit.toString().length > (digit - remainder).toString().length) outputFile.write(" ")
-    outputFile.write(
-        "-${digit - remainder}" +
-                " ".repeat(lhv.toString().length + 3 - digit.toString().length) +
-                "${lhv / rhv}\n"
-    )
-    if (digit.toString().length > (digit - remainder).toString().length) outputFile.write(" ")
-    outputFile.write("-".repeat((digit - remainder).toString().length + 1) + "\n")
+    if (digit.toString().length == (digit - remainder).toString().length) {
+        outputFile.write(" $lhv | $rhv\n")
+        outputFile.write(
+            "-${digit - remainder}" +
+                    " ".repeat(lhv.toString().length + 3 - digit.toString().length) +
+                    "${lhv / rhv}\n"
+        )
+        outputFile.write("-".repeat((digit - remainder).toString().length + 1) + "\n")
+    } else {
+        outputFile.write("$lhv | $rhv\n")
+        outputFile.write(" ".repeat(digit.toString().length - (digit - remainder).toString().length - 1))
+        outputFile.write(
+            "-${digit - remainder}" +
+                    " ".repeat(lhv.toString().length + 3 - digit.toString().length) +
+                    "${lhv / rhv}\n"
+        )
+        outputFile.write("-".repeat(digit.toString().length - (digit - remainder).toString().length + 1) + "\n")
+        positionOfDigit--
+    }
     positionOfDigit += digit.toString().length - remainder.toString().length //нахожу сколько мне нужно пробелов, чтобы выводить digit в правильном месте
     for (i in digit.toString().length until lhv.toString().length) {
         counter--
@@ -699,7 +709,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
         }
         positionOfDigit += digit.toString().length - remainder.toString().length //нахожу сколько мне нужно пробелов, чтобы выводить digit в правильном месте
     }
-    for (j in 0..(lhv.toString().length - (lhv % rhv).toString().length)) outputFile.write(" ")
+    outputFile.write(" ".repeat(positionOfDigit))
     outputFile.write("$remainder")
     outputFile.close()
 }
