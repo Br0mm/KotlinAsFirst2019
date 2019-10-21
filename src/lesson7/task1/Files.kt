@@ -686,7 +686,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
                     " ".repeat(lhv.toString().length + 3 - digit.toString().length) +
                     "${lhv / rhv}\n"
         )
-        outputFile.write("-".repeat(digit.toString().length - (digit - remainder).toString().length + 1) + "\n")
+        outputFile.write("-".repeat(digit.toString().length) + "\n")
         positionOfDigit--
     }
     positionOfDigit += digit.toString().length - remainder.toString().length //нахожу сколько мне нужно пробелов, чтобы выводить digit в правильном месте
