@@ -143,8 +143,7 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    val line = "$jumps "
-    if (!line.matches(Regex("""^((\d+|%|-)\s)*$"""))) return -1
+    if (!"$jumps ".matches(Regex("""^((\d+|%|-)\s)*$"""))) return -1
     val parts = Regex("""[ %\-]""").split(jumps)
     var max = -1
     for (i in 0 until parts.size) {
@@ -166,8 +165,7 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    val line = "$jumps "
-    if (!line.matches(Regex("""^(\d+\s|%\s?|-\s?|\+\s?)*$"""))) return -1
+    if (!"$jumps ".matches(Regex("""^(\d+\s|%\s?|-\s?|\+\s?)*$"""))) return -1
     val parts = Regex("""[ ]""").split(jumps)
     var max = -1
     for (i in 0 until parts.size - 1) {
@@ -187,7 +185,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    if (!expression.matches(Regex("""^\d+[ +\d%\-]*$"""))) throw IllegalArgumentException(expression)
+    if (!"$expression ".matches(Regex("""^((\d+|[+-])\s)*$"""))) throw IllegalArgumentException(expression)
     val parts = Regex("""[ ]""").split(expression)
     var result = parts[0].toInt()
     for (i in 1 until parts.size - 1 step 2) {
@@ -196,6 +194,7 @@ fun plusMinus(expression: String): Int {
         when {
             parts[i] == "+" -> result += parts[i + 1].toInt()
             parts[i] == "-" -> result -= parts[i + 1].toInt()
+            else -> throw IllegalArgumentException(expression)
         }
     }
     return result
