@@ -143,7 +143,8 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    if (!jumps.matches(Regex("""^[ \d%\-]*$"""))) return -1
+    val line = "$jumps "
+    if (!line.matches(Regex("""^((\d+|%|-)\s)*$"""))) return -1
     val parts = Regex("""[ %\-]""").split(jumps)
     var max = -1
     for (i in 0 until parts.size) {
@@ -165,13 +166,13 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (!jumps.matches(Regex("""^[ +\d%\-]*$"""))) return -1
+    val line = "$jumps "
+    if (!line.matches(Regex("""^(\d+\s|%\s?|-\s?|\+\s?)*$"""))) return -1
     val parts = Regex("""[ ]""").split(jumps)
     var max = -1
     for (i in 0 until parts.size - 1) {
-        if (parts[i + 1] == "+")
-            if (parts[i].toInt() > max)
-                max = parts[i].toInt()
+        if (parts[i].matches(Regex("""^\d+$""")) && parts[i + 1] == "+" && parts[i].toInt() > max)
+            max = parts[i].toInt()
     }
     return max
 }
@@ -232,7 +233,8 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
     if (description.isEmpty()) return ""
-    if (!description.matches(Regex("""^(.+\s\d+\.?\d*;?\s?)*$"""))) return ""
+    val line = "$description; "
+    if (!line.matches(Regex("""^(.+\s\d+\.?\d*;\s)*$"""))) return ""
     val parts = Regex("""[; ]""").split(description)
     var maxPrice = parts[1].toDouble()
     var nameOfProduct = parts[0]
