@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import lesson4.task1.digit
 import java.io.File
 import java.lang.StringBuilder
 import kotlin.math.pow
@@ -85,33 +86,31 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val outputFile = File(outputName).bufferedWriter()
-    var needChange: Boolean
-    for (line in File(inputName).readLines()) {
-        needChange = false
-        for (char in line) {
-            var str = char
-            if (needChange) {
-                str = when (char) {
-                    'Я' -> 'А'
-                    'я' -> 'а'
-                    'Ы' -> 'И'
-                    'ы' -> 'и'
-                    'Ю' -> 'У'
-                    'ю' -> 'у'
-                    else -> char
+    val dictionary = setOf<Char>('ж', 'ч', 'ш', 'щ')
+    File(outputName).bufferedWriter().use {
+        var needChange: Boolean
+        for (line in File(inputName).readLines()) {
+            needChange = false
+            for (char in line) {
+                var str = char
+                if (needChange) {
+                    str = when (char) {
+                        'Я' -> 'А'
+                        'я' -> 'а'
+                        'Ы' -> 'И'
+                        'ы' -> 'и'
+                        'Ю' -> 'У'
+                        'ю' -> 'у'
+                        else -> char
+                    }
+                    needChange = false
                 }
-                needChange = false
+                needChange = dictionary.contains(char.toLowerCase())
+                it.write("$str")
             }
-            if (char.toLowerCase() == 'ж' || char.toLowerCase() == 'ч'
-                || char.toLowerCase() == 'ш' || char.toLowerCase() == 'щ'
-            )
-                needChange = true
-            outputFile.write("$str")
+            it.newLine()
         }
-        outputFile.newLine()
     }
-    outputFile.close()
 }
 
 /**
@@ -132,19 +131,19 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    val outputFile = File(outputName).bufferedWriter()
-    var biggestLength = 0
-    var str: String
-    for (line in File(inputName).readLines()) {
-        if (line.trim().length > biggestLength) biggestLength = line.trim().length
+    File(outputName).bufferedWriter().use {
+        var biggestLength = 0
+        var str: String
+        for (line in File(inputName).readLines()) {
+            if (line.trim().length > biggestLength) biggestLength = line.trim().length
+        }
+        for (line in File(inputName).readLines()) {
+            str = line.trim()
+            for (i in 1..(biggestLength - str.length) / 2) it.write(" ")
+            it.write(str)
+            it.newLine()
+        }
     }
-    for (line in File(inputName).readLines()) {
-        str = line.trim()
-        for (i in 1..(biggestLength - str.length) / 2) outputFile.write(" ")
-        outputFile.write(str)
-        outputFile.newLine()
-    }
-    outputFile.close()
 }
 
 /**
@@ -175,49 +174,49 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    val outputFile = File(outputName).bufferedWriter()
-    val wordsInLine = mutableListOf<Int>()
-    val lengthOfLine = mutableListOf<Int>()
-    var counterOfWords: Int
-    var index = 0
-    var counterOfAddedSpaces: Int
-    val biggestLength: Int
-    var str: String
-    for (line in File(inputName).readLines()) {
-        wordsInLine.add(index, 0)
-        lengthOfLine.add(index, 0)
-        for (word in line.split(" ")) {
-            if (word.isEmpty()) continue
-            lengthOfLine[index] += word.length + 1
-            wordsInLine[index]++
+    File(outputName).bufferedWriter().use {
+        val wordsInLine = mutableListOf<Int>()
+        val lengthOfLine = mutableListOf<Int>()
+        var counterOfWords: Int
+        var index = 0
+        var counterOfAddedSpaces: Int
+        val biggestLength: Int
+        var str: String
+        for (line in File(inputName).readLines()) {
+            wordsInLine.add(index, 0)
+            lengthOfLine.add(index, 0)
+            for (word in line.split(" ")) {
+                if (word.isEmpty()) continue
+                lengthOfLine[index] += word.length + 1
+                wordsInLine[index]++
+            }
+            if (lengthOfLine[index] > 0) lengthOfLine[index]--
+            index++
         }
-        if (lengthOfLine[index] > 0) lengthOfLine[index]--
-        index++
-    }
-    biggestLength = lengthOfLine.max() ?: 0
-    index = 0
-    for (line in File(inputName).readLines()) {
-        str = line.trim()
-        counterOfAddedSpaces = 0
-        counterOfWords = 0
-        for (word in str.split(" ")) {
-            if (word.isEmpty()) continue
-            counterOfWords++
-            outputFile.write(word)
-            if (counterOfWords < wordsInLine[index]) {
-                outputFile.write(" ")
-                for (i in 1..(biggestLength - lengthOfLine[index]) / (wordsInLine[index] - 1))
-                    outputFile.write(" ")
-                if ((biggestLength - lengthOfLine[index]) % (wordsInLine[index] - 1) > counterOfAddedSpaces) {
-                    outputFile.write(" ")
-                    counterOfAddedSpaces++
+        biggestLength = lengthOfLine.max() ?: 0
+        index = 0
+        for (line in File(inputName).readLines()) {
+            str = line.trim()
+            counterOfAddedSpaces = 0
+            counterOfWords = 0
+            for (word in str.split(" ")) {
+                if (word.isEmpty()) continue
+                counterOfWords++
+                it.write(word)
+                if (counterOfWords < wordsInLine[index]) {
+                    it.write(" ")
+                    for (i in 1..(biggestLength - lengthOfLine[index]) / (wordsInLine[index] - 1))
+                        it.write(" ")
+                    if ((biggestLength - lengthOfLine[index]) % (wordsInLine[index] - 1) > counterOfAddedSpaces) {
+                        it.write(" ")
+                        counterOfAddedSpaces++
+                    }
                 }
             }
+            it.newLine()
+            index++
         }
-        outputFile.newLine()
-        index++
     }
-    outputFile.close()
 }
 
 /**
@@ -240,8 +239,6 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  */
 fun top20Words(inputName: String): Map<String, Int> {
     var allWords = mutableMapOf<String, Int>()
-    var counterOfWords = 0
-    val topOfWords = mutableMapOf<String, Int>()
     for (line in File(inputName).readLines()) {
         for (word in line.split(Regex("""[^a-zA-ZА-Яа-яёЁ]"""))) {
             if (word.isEmpty()) continue
@@ -250,13 +247,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     }
     if (allWords.size < 20) return allWords
     allWords = allWords.toList().sortedByDescending { it.second }.toMap().toMutableMap()
-    for ((key, value) in allWords) {
-        if (counterOfWords < 20) {
-            topOfWords[key] = value
-            counterOfWords++
-        } else break
-    }
-    return topOfWords
+    return allWords.toList().subList(0, 20).toMap()
 }
 
 /**
@@ -296,20 +287,19 @@ fun top20Words(inputName: String): Map<String, Int> {
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val newDictionary = mutableMapOf<Char, String>()
-    val outputFile = File(outputName).bufferedWriter()
-    for ((key, value) in dictionary)
-        newDictionary[key.toLowerCase()] = value.toLowerCase()
-    for (line in File(inputName).readLines()) {
-        for (char in line) {
-            if (newDictionary.containsKey(char.toLowerCase())) {
-                if (char in 'A'..'Z' || char in 'А'..'Я')
-                    outputFile.write(newDictionary[char.toLowerCase()]!!.capitalize())
-                else outputFile.write(newDictionary[char]!!)
-            } else outputFile.write(char.toString().toLowerCase())
+    File(outputName).bufferedWriter().use {
+        for ((key, value) in dictionary)
+            newDictionary[key.toLowerCase()] = value.toLowerCase()
+        for (line in File(inputName).readLines()) {
+            for (char in line) {
+                if (newDictionary.containsKey(char.toLowerCase())) {
+                    if (char.isUpperCase()) it.write(newDictionary[char.toLowerCase()]!!.capitalize())
+                    else it.write(newDictionary[char]!!)
+                } else it.write(char.toString().toLowerCase())
+            }
+            it.newLine()
         }
-        outputFile.newLine()
     }
-    outputFile.close()
 }
 
 /**
@@ -660,56 +650,67 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переписать получше
-    val outputFile = File(outputName).bufferedWriter()
-    var digit = lhv
-    var counter = 0
-    var remainder: Int
-    var positionOfDigit = 1
-    while (digit / 10 >= rhv) {
-        counter++
-        digit /= 10
-    }
-    remainder = digit % rhv
-    if (digit.toString().length == (digit - remainder).toString().length) {
-        outputFile.write(" $lhv | $rhv\n")
-        outputFile.write(
-            "-${digit - remainder}" +
-                    " ".repeat(lhv.toString().length + 3 - digit.toString().length) +
-                    "${lhv / rhv}\n"
-        )
-        outputFile.write("-".repeat((digit - remainder).toString().length + 1) + "\n")
-    } else {
-        outputFile.write("$lhv | $rhv\n")
-        outputFile.write(" ".repeat(digit.toString().length - (digit - remainder).toString().length - 1))
-        outputFile.write(
-            "-${digit - remainder}" +
-                    " ".repeat(lhv.toString().length + 3 - digit.toString().length) +
-                    "${lhv / rhv}\n"
-        )
-        outputFile.write("-".repeat(digit.toString().length) + "\n")
-        positionOfDigit--
-    }
-    positionOfDigit += digit.toString().length - remainder.toString().length //нахожу сколько мне нужно пробелов, чтобы выводить digit в правильном месте
-    for (i in digit.toString().length until lhv.toString().length) {
-        counter--
-        outputFile.write(" ".repeat(positionOfDigit) + "$remainder${lhv / 10.0.pow(counter).toInt() % 10}\n")
-        if (remainder == 0) positionOfDigit++ // добавляю к positionOfDigit 1, если остаток от деления был 0
-        digit = remainder * 10 + lhv / 10.0.pow(counter).toInt() % 10 //нахожу часть числа, которя будет делиться на rhv
-        remainder = digit % rhv // нахожу остаток после деления части числа на rhv
-        if (digit.toString().length > (digit - remainder).toString().length) { // нахожу сколько мне нужно пробелов, в зависимости от вычитаемой части
-            outputFile.write(" ".repeat(positionOfDigit + (digit.toString().length - (digit - remainder).toString().length) - 1))
-            outputFile.write("-${digit - remainder}\n")
-            outputFile.write(" ".repeat(positionOfDigit))
-            outputFile.write("-".repeat(digit.toString().length) + "\n")
-        } else {
-            outputFile.write(" ".repeat(positionOfDigit - 1))
-            outputFile.write("-${digit - remainder}\n")
-            outputFile.write(" ".repeat(positionOfDigit - 1))
-            outputFile.write("-".repeat((digit - remainder).toString().length + 1) + "\n")
+    File(outputName).bufferedWriter().use {
+        var digit = lhv
+        var counter = 0
+        var remainder: Int
+        var positionOfDigit = 1
+        while (digit / 10 >= rhv) {
+            counter++
+            digit /= 10
+        }
+        remainder = digit % rhv
+
+        fun firstSubPrint(flag: Boolean): String { // обработка первых 3 строк выходного файла
+            val str = StringBuilder()
+            val counterOfMinuses = if (flag) (digit - remainder).toString().length + 1
+            else digit.toString().length
+            if (flag) str.append(" ")
+            str.append("$lhv | $rhv\n")
+            if (!flag) str.append(" ".repeat(digit.toString().length - (digit - remainder).toString().length - 1))
+            str.append(
+                "-${digit - remainder}" +
+                        " ".repeat(lhv.toString().length + 3 - digit.toString().length) +
+                        "${lhv / rhv}\n"
+            )
+            str.append("-".repeat(counterOfMinuses) + "\n")
+            return str.toString()
+        }
+
+        fun secondSubPrint(flag: Boolean): String { // нахожу сколько мне нужно пробелов, в зависимости от вычитаемой части
+            val str = StringBuilder()
+            if (flag) str.append(" ".repeat(positionOfDigit + (digit.toString().length - (digit - remainder).toString().length) - 1))
+            else str.append(" ".repeat(positionOfDigit - 1))
+            str.append("-${digit - remainder}\n")
+            if (flag) {
+                str.append(" ".repeat(positionOfDigit))
+                str.append("-".repeat(digit.toString().length) + "\n")
+            } else {
+                str.append(" ".repeat(positionOfDigit - 1))
+                str.append("-".repeat((digit - remainder).toString().length + 1) + "\n")
+            }
+            return str.toString()
+        }
+
+        var flag = digit.toString().length == (digit - remainder).toString().length
+        if (flag) it.write(firstSubPrint(flag))
+        else {
+            it.write(firstSubPrint(flag))
+            positionOfDigit--
         }
         positionOfDigit += digit.toString().length - remainder.toString().length //нахожу сколько мне нужно пробелов, чтобы выводить digit в правильном месте
+        for (i in digit.toString().length until lhv.toString().length) {
+            counter--
+            it.write(" ".repeat(positionOfDigit) + "$remainder${lhv / 10.0.pow(counter).toInt() % 10}\n")
+            if (remainder == 0) positionOfDigit++ // добавляю к positionOfDigit 1, если остаток от деления был 0
+            digit =
+                remainder * 10 + lhv / 10.0.pow(counter).toInt() % 10 //нахожу часть числа, которя будет делиться на rhv
+            remainder = digit % rhv // нахожу остаток после деления части числа на rhv
+            flag = digit.toString().length > (digit - remainder).toString().length
+            if (flag) it.write(secondSubPrint(flag)) // нахожу сколько мне нужно пробелов, в зависимости от вычитаемой части
+            else it.write(secondSubPrint(flag))
+            positionOfDigit += digit.toString().length - remainder.toString().length //нахожу сколько мне нужно пробелов, чтобы выводить digit в правильном месте
+        }
+        it.write(" ".repeat(positionOfDigit) + "$remainder")
     }
-    outputFile.write(" ".repeat(positionOfDigit))
-    outputFile.write("$remainder")
-    outputFile.close()
 }
