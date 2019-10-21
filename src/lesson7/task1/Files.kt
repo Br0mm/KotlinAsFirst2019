@@ -700,7 +700,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) { // переп
             outputFile.write(" ".repeat(positionOfDigit + (digit.toString().length - (digit - remainder).toString().length) - 1))
             outputFile.write("-${digit - remainder}\n")
             outputFile.write(" ".repeat(positionOfDigit))
-            outputFile.write("-".repeat(digit.toString().length - (digit - remainder).toString().length + 1) + "\n")
+            outputFile.write("-".repeat(digit.toString().length) + "\n")
         } else {
             outputFile.write(" ".repeat(positionOfDigit - 1))
             outputFile.write("-${digit - remainder}\n")
