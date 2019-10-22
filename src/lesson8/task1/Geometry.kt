@@ -170,9 +170,9 @@ class Line private constructor(val b: Double, val angle: Double) {
  */
 fun lineBySegment(s: Segment): Line {
     var angle = atan((s.end.y - s.begin.y) / (s.end.x - s.begin.x))
-    if (angle == PI) angle -= PI
     if (angle > PI) angle -= PI
     if (angle < 0.0) angle += PI
+    if (angle == PI) angle -= PI
     return Line(s.begin, angle)
 }
 
@@ -183,9 +183,9 @@ fun lineBySegment(s: Segment): Line {
  */
 fun lineByPoints(a: Point, b: Point): Line {
     var angle = atan((a.y - b.y) / (a.x - b.x))
-    if (angle == PI) angle -= PI
     if (angle > PI) angle -= PI
     if (angle < 0.0) angle += PI
+    if (angle == PI) angle -= PI
     return Line(a, angle)
 }
 
@@ -231,11 +231,17 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
     var centre = bisectorByPoints(b, c).crossPoint(bisectorByPoints(a, c))
     var radius = centre.distance(a)
-    val firstTestRadius = centre.distance(b)
-    val secondTestRadius = centre.distance(c)
+    var firstTestRadius = centre.distance(b)
+    var secondTestRadius = centre.distance(c)
     if (radius !in firstTestRadius - 1..firstTestRadius + 1 || radius !in secondTestRadius - 1..firstTestRadius + 1) {
         centre = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
         radius = centre.distance(a)
+        firstTestRadius = centre.distance(b)
+        secondTestRadius = centre.distance(c)
+        if (radius !in firstTestRadius - 1..firstTestRadius + 1 || radius !in secondTestRadius - 1..firstTestRadius + 1) {
+            centre = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
+            radius = centre.distance(a)
+        }
     }
     return (Circle(centre, radius))
 }
