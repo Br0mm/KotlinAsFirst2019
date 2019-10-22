@@ -263,7 +263,7 @@ fun minContainingCircle(vararg points: Point): Circle {
     for (j in 0 until points.size) {
         if (!testCircle.contains(points[j])) flag = false
     }
-    if (flag && testCircle.radius < minCircle.radius) minCircle = testCircle
+    if (flag && (testCircle.radius < minCircle.radius || minCircle.radius == -1.0)) minCircle = testCircle
     return minCircle
 }
 
