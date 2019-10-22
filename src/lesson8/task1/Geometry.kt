@@ -110,7 +110,7 @@ fun diameter(vararg points: Point): Segment {
     if (points.size < 2) throw IllegalArgumentException()
     var maxSegment = Segment(points[0], points[1])
     for (i in 0 until points.size - 1)
-        for (j in i until points.size)
+        for (j in i + 1 until points.size)
             if (points[i].distance(points[j]) > maxSegment.begin.distance(maxSegment.end))
                 maxSegment = Segment(points[i], points[j])
     return maxSegment
@@ -207,7 +207,15 @@ fun bisectorByPoints(a: Point, b: Point): Line {
  * Задан список из n окружностей на плоскости. Найти пару наименее удалённых из них.
  * Если в списке менее двух окружностей, бросить IllegalArgumentException
  */
-fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
+fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
+    if (circles.size < 2) throw IllegalArgumentException()
+    var nearest = Pair(circles[0], circles[1])
+    for (i in 0 until circles.size - 1)
+        for (j in i + 1 until circles.size)
+            if (circles[i].distance(circles[j]) < nearest.first.distance(nearest.second))
+                nearest = Pair(circles[i], circles[j])
+    return nearest
+}
 
 /**
  * Сложная
@@ -218,7 +226,11 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
  * (построить окружность по трём точкам, или
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
-fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
+fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
+    val centre = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
+    val radius = centre.distance(a)
+    return (Circle(centre, radius))
+}
 
 /**
  * Очень сложная
@@ -231,5 +243,27 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
  * три точки данного множества, либо иметь своим диаметром отрезок,
  * соединяющий две самые удалённые точки в данном множестве.
  */
-fun minContainingCircle(vararg points: Point): Circle = TODO()
+fun minContainingCircle(vararg points: Point): Circle {
+    if (points.isEmpty()) throw IllegalArgumentException()
+    if (points.size == 1) return Circle(points[0], 0.0)
+    var flag: Boolean
+    var testCircle: Circle
+    var minCircle = Circle(Point(0.0, 0.0), -1.0)
+
+    for (i in 0 until points.size - 2) {
+        flag = true
+        testCircle = circleByThreePoints(points[i], points[i + 1], points[i + 2])
+        for (j in 0 until points.size) {
+            if (!testCircle.contains(points[j])) flag = false
+        }
+        if (flag && (testCircle.radius < minCircle.radius || minCircle.radius == -1.0)) minCircle = testCircle
+    }
+    testCircle = circleByDiameter(diameter(*points))
+    flag = true
+    for (j in 0 until points.size) {
+        if (!testCircle.contains(points[j])) flag = false
+    }
+    if (flag && testCircle.radius < minCircle.radius) minCircle = testCircle
+    return minCircle
+}
 
