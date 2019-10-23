@@ -238,6 +238,23 @@ class Tests {
         val p12 = Point(0.08167235368510883, 0.4016887672933893)
         val p13 = Point(0.44462722003081234, -632.0)
         val p14 = Point(0.4344918662559768, -632.0)
+        val k1 = Point(0.03128417932649208, -632.0)
+        val k2 = Point(-632.0, -632.0)
+        val k3 = Point(0.019549680403975978, -632.0)
+        val k4 = Point(0.19543566049188765, -5e-324)
+        val k5 = Point(0.0, 0.4466509554000647)
+        val k6 = Point(0.7321531495669465, 0.7717831569880458)
+        val k7 = Point(0.2095033591332569, 0.9140841180298453)
+        val k8 = Point(-632.0, -632.0)
+        val k9 = Point(-5e-324, 0.0)
+        val k10 = Point(0.14716733037626106, 0.0)
+        val k11 = Point(0.7953580459169863, 0.936341682399648)
+        val k12 = Point(-632.0, 0.5162637720026494)
+        val k13 = Point(0.46647976441109884, 0.7043756958623997)
+        val k14 = Point(0.0, 0.28258360374231173)
+        val k15 = Point(-632.0, 0.9847032973143528)
+        val k16 = Point(0.5980526910769118, 0.13667053742500612)
+        val k17 = Point(0.6199548702410832, -632.0)
         val result = minContainingCircle(p1, p2, p3, p4, p5, p6)
         assertEquals(4.0, result.radius, 0.02)
         for (p in listOf(p1, p2, p3, p4, p5, p6)) {
@@ -247,6 +264,11 @@ class Tests {
         assertEquals(447.23199417597584, result1.radius, 0.02)
         for (p in listOf(p7, p8, p9, p10, p11, p12, p13, p14)) {
             assertTrue(result1.contains(p))
+        }
+        val result2 = minContainingCircle(k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17)
+        assertEquals(447.50373810324015, result2.radius, 0.02)
+        for (p in listOf(p7, p8, p9, p10, p11, p12, p13, p14)) {
+            assertTrue(result2.contains(p))
         }
     }
 }
