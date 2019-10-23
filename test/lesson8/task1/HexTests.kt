@@ -96,6 +96,7 @@ class HexTests {
         assertEquals(HexPoint(5, 0), HexPoint(5, 4).move(DOWN_LEFT, 4))
         assertEquals(HexPoint(1, 1), HexPoint(1, 1).move(DOWN_RIGHT, 0))
         assertEquals(HexPoint(4, 2), HexPoint(2, 2).move(LEFT, -2))
+        assertEquals(HexPoint(769393590, -769393671), HexPoint(477, -558).move(UP_LEFT, -769393113))
         assertThrows(IllegalArgumentException::class.java) {
             HexPoint(0, 0).move(INCORRECT, 0)
         }

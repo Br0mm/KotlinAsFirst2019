@@ -212,7 +212,7 @@ fun HexPoint.move(direction: Direction, distance: Int): HexPoint {
     return when (direction.ordinal % 3) {
         0 -> HexPoint(x + way, y)
         1 -> HexPoint(x, y + way)
-        else -> HexPoint(x - abs(way), y + way)
+        else -> HexPoint(x - way, y + way)
     }
 }
 
@@ -234,7 +234,29 @@ fun HexPoint.move(direction: Direction, distance: Int): HexPoint {
  *       HexPoint(y = 5, x = 3)
  *     )
  */
-fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> = TODO()
+fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
+    var x = from.x
+    var y = from.y
+    val answer = mutableListOf(from)
+    while (x != to.x || y != to.y) {
+        if (((to.x - x) > 0 && (to.y - y) < 0) || ((to.x - x) < 0 && (to.y - y) > 0)) {
+            x += (to.x - x) / abs(to.x - x)
+            y += (to.y - y) / abs(to.y - y)
+            answer.add(HexPoint(x, y))
+            continue
+        }
+        if ((to.x - x) != 0) {
+            x += (to.x - x) / abs(to.x - x)
+            answer.add(HexPoint(x, y))
+            continue
+        } else {
+            y += (to.y - y) / abs(to.y - y)
+            answer.add(HexPoint(x, y))
+            continue
+        }
+    }
+    return answer
+}
 
 /**
  * Очень сложная
