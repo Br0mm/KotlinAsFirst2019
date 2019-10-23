@@ -230,18 +230,15 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
     var centre = bisectorByPoints(b, c).crossPoint(bisectorByPoints(a, c))
-    var radius = centre.distance(a)
-    var firstTestRadius = centre.distance(b)
-    var secondTestRadius = centre.distance(c)
-    if (radius !in firstTestRadius - 1..firstTestRadius + 1 || radius !in secondTestRadius - 1..firstTestRadius + 1) {
+    val firstTestRadius = centre.distance(b)
+    val secondTestRadius = centre.distance(c)
+    val thirdTestRadius = centre.distance(a)
+    var radius = maxOf(centre.distance(b), centre.distance(c), centre.distance(a))
+    if (radius !in firstTestRadius - 1..firstTestRadius + 1 || radius !in secondTestRadius - 1..firstTestRadius + 1 ||
+        radius !in thirdTestRadius - 1..thirdTestRadius + 1
+    ) {
         centre = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
-        radius = centre.distance(a)
-        firstTestRadius = centre.distance(b)
-        secondTestRadius = centre.distance(c)
-        if (radius !in firstTestRadius - 1..firstTestRadius + 1 || radius !in secondTestRadius - 1..firstTestRadius + 1) {
-            centre = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
-            radius = centre.distance(a)
-        }
+        radius = maxOf(centre.distance(b), centre.distance(c), centre.distance(a))
     }
     return (Circle(centre, radius))
 }
@@ -257,21 +254,23 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * три точки данного множества, либо иметь своим диаметром отрезок,
  * соединяющий две самые удалённые точки в данном множестве.
  */
-fun minContainingCircle(vararg points: Point): Circle {
+fun minContainingCircle(vararg points: Point): Circle { //пересмотреть этот и предыдущий номер
     if (points.isEmpty()) throw IllegalArgumentException()
     if (points.size == 1) return Circle(points[0], 0.0)
     var flag: Boolean
     var testCircle: Circle
     var minCircle = Circle(Point(0.0, 0.0), -1.0)
-
-    for (i in 0 until points.size - 2) {
-        flag = true
-        testCircle = circleByThreePoints(points[i], points[i + 1], points[i + 2])
-        for (j in 0 until points.size) {
-            if (!testCircle.contains(points[j])) flag = false
-        }
-        if (flag && (testCircle.radius < minCircle.radius || minCircle.radius == -1.0)) minCircle = testCircle
-    }
+    for (i in 0 until points.size - 2)
+        for (l in i + 1 until points.size - 1)
+            for (k in l + 1 until points.size) {
+                flag = true
+                testCircle = circleByThreePoints(points[i], points[l], points[k])
+                for (j in 0 until points.size) {
+                    if (!testCircle.contains(points[j])) flag = false
+                }
+                if (flag && (testCircle.radius < minCircle.radius || minCircle.radius == -1.0)) minCircle =
+                    testCircle
+            }
     testCircle = circleByDiameter(diameter(*points))
     flag = true
     for (j in 0 until points.size) {
@@ -280,4 +279,3 @@ fun minContainingCircle(vararg points: Point): Circle {
     if (flag && (testCircle.radius < minCircle.radius || minCircle.radius == -1.0)) minCircle = testCircle
     return minCircle
 }
-
