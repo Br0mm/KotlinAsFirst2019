@@ -204,7 +204,17 @@ enum class Direction {
  * 35, direction = UP_LEFT, distance = 2 --> 53
  * 45, direction = DOWN_LEFT, distance = 4 --> 05
  */
-fun HexPoint.move(direction: Direction, distance: Int): HexPoint = TODO()
+fun HexPoint.move(direction: Direction, distance: Int): HexPoint {
+    if (direction == Direction.INCORRECT) throw IllegalArgumentException()
+    if (distance == 0) return HexPoint(x, y)
+    var way = distance
+    if (direction.ordinal > 2) way *= -1
+    return when (direction.ordinal % 3) {
+        0 -> HexPoint(x + way, y)
+        1 -> HexPoint(x, y + way)
+        else -> HexPoint(x - abs(way), y + way)
+    }
+}
 
 /**
  * Сложная
