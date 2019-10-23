@@ -260,7 +260,6 @@ fun minContainingCircle(vararg points: Point): Circle { //пересмотрет
     var flag: Boolean
     var testCircle: Circle
     var minCircle = Circle(Point(0.0, 0.0), -1.0)
-
     for (i in 0 until points.size - 2)
         for (l in i + 1 until points.size - 1)
             for (k in l + 1 until points.size) {
@@ -272,11 +271,5 @@ fun minContainingCircle(vararg points: Point): Circle { //пересмотрет
                 }
                 if (flag && (testCircle.radius < minCircle.radius || minCircle.radius == -1.0)) minCircle = testCircle
             }
-    testCircle = circleByDiameter(diameter(*points))
-    flag = true
-    for (j in 0 until points.size) {
-        if (!testCircle.contains(points[j])) flag = false
-    }
-    if (flag && (testCircle.radius < minCircle.radius || minCircle.radius == -1.0)) minCircle = testCircle
     return minCircle
 }
