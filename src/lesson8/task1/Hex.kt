@@ -91,7 +91,14 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * Такими являются, например, отрезок 30-34 (горизонталь), 13-63 (прямая диагональ) или 51-24 (косая диагональ).
      * А, например, 13-26 не является "правильным" отрезком.
      */
-    fun isValid(): Boolean = TODO()
+    fun isValid(): Boolean {
+        var flag = (begin.y == end.y) && (begin.x != end.x) || (begin.x == end.x) && (begin.y != end.y)
+        if (!flag) {
+            if (((begin.x - end.x) > 0 && (begin.y - end.y) < 0) || ((begin.x - end.x) < 0 && (begin.y - end.y) > 0))
+                flag = (abs(begin.x - end.x) == abs(begin.y - end.y))
+        }
+        return flag
+    }
 
     /**
      * Средняя
@@ -100,7 +107,23 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * Для "правильного" отрезка выбирается одно из первых шести направлений,
      * для "неправильного" -- INCORRECT.
      */
-    fun direction(): Direction = TODO()
+    fun direction(): Direction {
+        if (!isValid()) return Direction.INCORRECT
+        val differenceX = end.x - begin.x
+        val differenceY = end.y - begin.y
+        return when {
+            differenceX == 0 -> {
+                if (differenceY > 0) Direction.UP_RIGHT
+                else Direction.DOWN_LEFT
+            }
+            differenceY == 0 -> {
+                if (differenceX > 0) Direction.RIGHT
+                else Direction.LEFT
+            }
+            differenceX > differenceY -> Direction.DOWN_RIGHT
+            else -> Direction.UP_LEFT
+        }
+    }
 
     override fun equals(other: Any?) =
         other is HexSegment && (begin == other.begin && end == other.end || end == other.begin && begin == other.end)
@@ -129,7 +152,17 @@ enum class Direction {
      * Вернуть направление, противоположное данному.
      * Для INCORRECT вернуть INCORRECT
      */
-    fun opposite(): Direction = TODO()
+    fun opposite(): Direction {
+        return when (ordinal) {
+            0 -> LEFT
+            1 -> DOWN_LEFT
+            2 -> DOWN_RIGHT
+            3 -> RIGHT
+            4 -> UP_RIGHT
+            5 -> UP_LEFT
+            else -> INCORRECT
+        }
+    }
 
     /**
      * Средняя
