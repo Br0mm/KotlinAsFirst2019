@@ -174,7 +174,10 @@ enum class Direction {
      * Для направления INCORRECT бросить исключение IllegalArgumentException.
      * При решении этой задачи попробуйте обойтись без перечисления всех семи вариантов.
      */
-    fun next(): Direction = TODO()
+    fun next(): Direction {
+        if (ordinal == 6) throw IllegalArgumentException()
+        return values()[(ordinal + 1) % 6]
+    }
 
     /**
      * Простая
@@ -182,7 +185,10 @@ enum class Direction {
      * Вернуть true, если данное направление совпадает с other или противоположно ему.
      * INCORRECT не параллельно никакому направлению, в том числе другому INCORRECT.
      */
-    fun isParallel(other: Direction): Boolean = TODO()
+    fun isParallel(other: Direction): Boolean {
+        if (ordinal == 6 || other.ordinal == 6) return false
+        return ordinal == other.ordinal || ordinal == (other.ordinal + 3) % 6
+    }
 }
 
 /**
