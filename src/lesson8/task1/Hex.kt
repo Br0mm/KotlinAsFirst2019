@@ -273,7 +273,52 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
  *
  * Если все три точки совпадают, вернуть шестиугольник нулевого радиуса с центром в данной точке.
  */
-fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? = TODO()
+fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
+    var diameter = maxOf(a.distance(b), b.distance(c), a.distance(c))
+    var center: HexPoint
+    val begin: HexPoint
+    val other: HexPoint
+    val end: HexPoint
+    val pointOfMove: HexPoint
+    when (diameter) {
+        a.distance(b) -> {
+            begin = a
+            other = c
+            end = b
+        }
+        a.distance(c) -> {
+            begin = a
+            other = b
+            end = c
+        }
+        else -> {
+            begin = b
+            other = a
+            end = c
+        }
+    }
+    if (HexSegment(a, b).direction() == HexSegment(a, c).direction() && HexSegment(a, b).direction() == HexSegment(b, c).direction() && HexSegment(a, b).direction() != Direction.INCORRECT) {
+        center = begin.move(Direction.values()[HexSegment(begin, end).direction().ordinal + 1], diameter)
+        return (Hexagon(center, diameter))
+    } else {
+        center = pathBetweenHexes(begin, end)[pathBetweenHexes(begin, end).size / 2]
+        if (center.distance(begin) != center.distance(end)) return null
+        if (center.distance(other) == center.distance(begin)) return (Hexagon(center, diameter / 2))
+        else {
+            if (HexSegment(center, other).direction() == Direction.INCORRECT) return null
+            center = center.move(HexSegment(center, other).direction(), (center.distance(other) - diameter) / 2)
+            if (center.distance(begin) == center.distance(end) && center.distance(begin) == center.distance(other)) return (Hexagon(center, diameter / 2))
+            else {
+                diameter = minOf(center.distance(begin), center.distance(end))
+                pointOfMove = if (diameter == center.distance(begin)) begin else end
+                if (HexSegment(center, pointOfMove).direction() == Direction.INCORRECT) return null
+                center = center.move(HexSegment(center, pointOfMove).direction(), (center.distance(pointOfMove) - diameter) / 2)
+                return if (center.distance(begin) != center.distance(end) || center.distance(begin) != center.distance(other)) null
+                else (Hexagon(center, diameter / 2))
+            }
+        }
+    }
+}
 
 /**
  * Очень сложная
