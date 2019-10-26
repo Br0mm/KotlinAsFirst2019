@@ -131,6 +131,10 @@ class HexTests {
             hexagonByThreePoints(HexPoint(2, 3), HexPoint(3, 3), HexPoint(5, 3))?.radius
         )
         assertEquals(
+            253,
+            hexagonByThreePoints(HexPoint(-296, -805), HexPoint(-558, -557), HexPoint(-797, -558))?.radius
+        )
+        assertEquals(
             1493,
             hexagonByThreePoints(HexPoint(-999, -791), HexPoint(-1000, 494), HexPoint(-999, -1000))?.radius
         )

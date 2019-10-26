@@ -272,78 +272,7 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
  *
  * Если все три точки совпадают, вернуть шестиугольник нулевого радиуса с центром в данной точке.
  */
-fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
-    var diameter = maxOf(a.distance(b), b.distance(c), a.distance(c))
-    var center: HexPoint
-    val begin: HexPoint
-    val other: HexPoint
-    val end: HexPoint
-    var way: Direction
-    val pointOfMove: HexPoint
-    when (diameter) {
-        a.distance(b) -> {
-            begin = a
-            other = c
-            end = b
-        }
-        a.distance(c) -> {
-            begin = a
-            other = b
-            end = c
-        }
-        else -> {
-            begin = b
-            other = a
-            end = c
-        }
-    }
-    if (HexSegment(a, b).direction() == HexSegment(a, c).direction() && HexSegment(a, b).direction() == HexSegment(
-            b,
-            c
-        ).direction() && HexSegment(a, b).direction() != Direction.INCORRECT
-    ) {
-        center = begin.move(Direction.values()[HexSegment(begin, end).direction().ordinal + 1], diameter)
-        return (Hexagon(center, diameter))
-    } else {
-        center = pathBetweenHexes(begin, end)[pathBetweenHexes(begin, end).size / 2]
-        if (center.distance(other) == center.distance(begin) && center.distance(begin) == center.distance(end)) return (Hexagon(
-            center,
-            diameter / 2
-        ))
-        else {
-            way = when {
-                HexSegment(center, other).direction() != Direction.INCORRECT -> HexSegment(center, other).direction()
-                other.y > center.y -> Direction.RIGHT
-                center.x < other.x -> Direction.DOWN_LEFT
-                else -> Direction.DOWN_RIGHT
-            }
-            center = center.move(way, (center.distance(other) - diameter) / 2)
-            if (center.distance(begin) == center.distance(end) && center.distance(begin) == center.distance(other)) return (Hexagon(
-                center,
-                diameter / 2
-            ))
-            else {
-                diameter = minOf(center.distance(begin), center.distance(end))
-                pointOfMove = if (diameter == center.distance(begin)) begin else end
-                way = when {
-                    HexSegment(center, pointOfMove).direction() != Direction.INCORRECT -> HexSegment(
-                        center,
-                        other
-                    ).direction()
-                    pointOfMove.y > center.y -> Direction.RIGHT
-                    center.x < pointOfMove.x -> Direction.DOWN_LEFT
-                    else -> Direction.DOWN_RIGHT
-                }
-                center = center.move(way, (center.distance(pointOfMove) - diameter) / 2)
-                return if (center.distance(begin) != center.distance(end) || center.distance(begin) != center.distance(
-                        other
-                    )
-                ) null
-                else (Hexagon(center, diameter / 2))
-            }
-        }
-    }
-}
+fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? = TODO()
 
 /**
  * Очень сложная
@@ -355,7 +284,24 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
  *
  * Пример: 13, 32, 45, 18 -- шестиугольник радиусом 3 (с центром, например, в 15)
  */
-fun minContainingHexagon(vararg points: HexPoint): Hexagon = TODO()
+fun minContainingHexagon(vararg points: HexPoint): Hexagon {
+    val center: HexPoint
+    var begin = HexPoint(-1, -1)
+    var end = HexPoint(-1, -1)
+    var diameter = -1
+    if (points.isEmpty()) throw IllegalArgumentException()
+    if (points.size == 1) return Hexagon(points[0], 0)
+    for (i in 0 until points.size - 1) {
+        for (j in i + 1 until points.size)
+            if (points[i].distance(points[j]) > diameter) {
+                diameter = points[i].distance(points[j])
+                begin = points[i]
+                end = points[j]
+            }
+    }
+    center = pathBetweenHexes(begin, end)[pathBetweenHexes(begin, end).size / 2]
+    return Hexagon(center, maxOf(center.distance(begin), center.distance(end)))
+}
 
 
 
