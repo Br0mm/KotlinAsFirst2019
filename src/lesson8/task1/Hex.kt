@@ -272,7 +272,32 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
  *
  * Если все три точки совпадают, вернуть шестиугольник нулевого радиуса с центром в данной точке.
  */
-fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? = TODO()
+fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
+    val maxR = maxOf(a.distance(b), b.distance(c), a.distance(c))
+    val minR = maxOf(a.distance(b), b.distance(c), a.distance(c)) / 2
+    val hexagonOfPoints = mutableMapOf<HexPoint, Int>()
+    val hexPoints = listOf<HexPoint>(a, b, c)
+    var currentHexPoint: HexPoint
+    var center = HexPoint(-10, -10)
+    for (i in minR..maxR) {
+        hexagonOfPoints.clear()
+        for (point in hexPoints) {
+            currentHexPoint = point.move(Direction.DOWN_LEFT, i)
+            for (j in 0..5) {
+                for (k in 0 until i) {
+                    currentHexPoint = currentHexPoint.move(Direction.values()[j], 1)
+                    hexagonOfPoints[currentHexPoint] = hexagonOfPoints.getOrPut(currentHexPoint, { 0 }) + 1
+                }
+            }
+        }
+        if (hexagonOfPoints.containsValue(3)) {
+            for ((key, value) in hexagonOfPoints)
+                if (value == 3) center = key
+            return Hexagon(center, center.distance(a))
+        }
+    }
+    return null
+}
 
 /**
  * Очень сложная
@@ -284,24 +309,7 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? = TODO
  *
  * Пример: 13, 32, 45, 18 -- шестиугольник радиусом 3 (с центром, например, в 15)
  */
-fun minContainingHexagon(vararg points: HexPoint): Hexagon {
-    val center: HexPoint
-    var begin = HexPoint(-1, -1)
-    var end = HexPoint(-1, -1)
-    var diameter = -1
-    if (points.isEmpty()) throw IllegalArgumentException()
-    if (points.size == 1) return Hexagon(points[0], 0)
-    for (i in 0 until points.size - 1) {
-        for (j in i + 1 until points.size)
-            if (points[i].distance(points[j]) > diameter) {
-                diameter = points[i].distance(points[j])
-                begin = points[i]
-                end = points[j]
-            }
-    }
-    center = pathBetweenHexes(begin, end)[pathBetweenHexes(begin, end).size / 2]
-    return Hexagon(center, maxOf(center.distance(begin), center.distance(end)))
-}
+fun minContainingHexagon(vararg points: HexPoint): Hexagon = TODO()
 
 
 
