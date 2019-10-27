@@ -284,11 +284,12 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     var currentHexPoint: HexPoint
     var center = HexPoint(-10, -10)
     var radius: List<Int>
-    val t1 = HexSegment(hexPoints[0], hexPoints[1]).direction()
-    val t2 = HexSegment(hexPoints[0], hexPoints[2]).direction()
-    val t3 = HexSegment(hexPoints[1], hexPoints[2]).direction()
-    if (t1 == t2 && t1 == t3 && t1 != Direction.INCORRECT) {
-        center = hexPoints[0].move(Direction.values()[HexSegment(hexPoints[0], hexPoints[2]).direction().ordinal + 1], maxR)
+    val direction1 = HexSegment(hexPoints[0], hexPoints[1]).direction()
+    val direction2 = HexSegment(hexPoints[0], hexPoints[2]).direction()
+    val direction3 = HexSegment(hexPoints[1], hexPoints[2]).direction()
+    if (direction1 == direction2 && direction1 == direction3 && direction1 != Direction.INCORRECT) {
+        center =
+            hexPoints[0].move(Direction.values()[HexSegment(hexPoints[0], hexPoints[2]).direction().ordinal + 1], maxR)
         return (Hexagon(center, center.distance(a)))
     }
 
@@ -308,18 +309,9 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     }
 
     fun discoveringTheRadius(minR: Int, maxR: Int): List<Int> { //функция, уменьшающая дистанцию между радиусами
-        val test1: Int
-        val test2: Int
-        val test3: Int
-        val test4: Set<HexPoint>
-        val test5: Set<HexPoint>
-        val test6: Set<HexPoint>
-        val test7: Int
-        val test8: Int
-        val test9: Int
-        val test10: HexPoint
-        val test11: HexPoint
-        val test12: HexPoint
+        val pointOfIntersectionBC: HexPoint
+        val pointOfIntersectionAC: HexPoint
+        val pointOfIntersectionAB: HexPoint
         val i = minR + ((maxR - minR) / 2)
         currentHexPoint = a.move(Direction.DOWN_LEFT, i)
         hexagonOfA = circleOfHexes(i, currentHexPoint)
@@ -327,81 +319,84 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
         hexagonOfB = circleOfHexes(i, currentHexPoint)
         currentHexPoint = c.move(Direction.DOWN_LEFT, i)
         hexagonOfC = circleOfHexes(i, currentHexPoint)
-        test4 = hexagonOfA.intersect(hexagonOfB)
-        test7 = a.distance(b)
-        test5 = hexagonOfA.intersect(hexagonOfC)
-        test8 = a.distance(c)
-        test6 = hexagonOfB.intersect(hexagonOfC)
-        test9 = b.distance(c)
+        val intersectionOfAB = hexagonOfA.intersect(hexagonOfB)
+        val intersectionOfAC = hexagonOfA.intersect(hexagonOfC)
+        val intersectionOfBC = hexagonOfB.intersect(hexagonOfC)
 
-
-        if (a.distance(test6.elementAt(0)) > a.distance(test6.elementAt(1))) test10 = test6.elementAt(1)
-        else test10 = test6.elementAt(0)
-        if (b.distance(test5.elementAt(0)) > b.distance(test5.elementAt(1))) test11 = test5.elementAt(1)
-        else test11 = test5.elementAt(0)
-        if (c.distance(test4.elementAt(0)) > c.distance(test4.elementAt(1))) test12 = test4.elementAt(1)
-        else test12 = test4.elementAt(0)
+        pointOfIntersectionBC =
+            if (a.distance(intersectionOfBC.elementAt(0)) > a.distance(intersectionOfBC.elementAt(1)))
+                intersectionOfBC.elementAt(1)
+            else intersectionOfBC.elementAt(0)
+        pointOfIntersectionAC =
+            if (b.distance(intersectionOfAC.elementAt(0)) > b.distance(intersectionOfAC.elementAt(1)))
+                intersectionOfAC.elementAt(1)
+            else intersectionOfAC.elementAt(0)
+        pointOfIntersectionAB =
+            if (c.distance(intersectionOfAB.elementAt(0)) > c.distance(intersectionOfAB.elementAt(1)))
+                intersectionOfAB.elementAt(1)
+            else intersectionOfAB.elementAt(0)
         when {
-            test4.size <= 2 && test5.size <= 2 && test6.size <= 2 -> {
-                return if (Hexagon(a, i).contains(test10) && Hexagon(b, i).contains(test11) && Hexagon(c, i).contains(test12)) listOf(minR, i)
+            intersectionOfAB.size <= 2 && intersectionOfAC.size <= 2 && intersectionOfBC.size <= 2 -> {
+                return if (Hexagon(a, i).contains(pointOfIntersectionBC) && Hexagon(b, i).contains(pointOfIntersectionAC)
+                    && Hexagon(c, i).contains(pointOfIntersectionAB))
+                    listOf(minR, i)
                 else listOf(i, maxR)
             }
-            test4.size <= 2 && test5.size <= 2 -> {
-                return if (Hexagon(b, i).contains(test11) && Hexagon(c, i).contains(test12)) listOf(minR, i)
+            intersectionOfAB.size <= 2 && intersectionOfAC.size <= 2 -> {
+                return if (Hexagon(b, i).contains(pointOfIntersectionAC)
+                    && Hexagon(c, i).contains(pointOfIntersectionAB)) listOf(minR, i)
                 else listOf(i, maxR)
             }
-            test4.size <= 2&& test6.size <= 2 -> {
-                return if (Hexagon(a, i).contains(test10) && Hexagon(c, i).contains(test12)) listOf(minR, i)
+            intersectionOfAB.size <= 2 && intersectionOfBC.size <= 2 -> {
+                return if (Hexagon(a, i).contains(pointOfIntersectionBC)
+                    && Hexagon(c, i).contains(pointOfIntersectionAB)) listOf(minR, i)
                 else listOf(i, maxR)
             }
-            test5.size <= 2 && test6.size <= 2 -> {
-                return if (Hexagon(a, i).contains(test10) && Hexagon(b, i).contains(test11)) listOf(minR, i)
+            intersectionOfAC.size <= 2 && intersectionOfBC.size <= 2 -> {
+                return if (Hexagon(a, i).contains(pointOfIntersectionBC)
+                    && Hexagon(b, i).contains(pointOfIntersectionAC)) listOf(minR, i)
                 else listOf(i, maxR)
             }
-            test4.size <= 2 -> {
-                return if (Hexagon(c, i).contains(test12)) listOf(minR, i)
+            intersectionOfAB.size <= 2 -> {
+                return if (Hexagon(c, i).contains(pointOfIntersectionAB)) listOf(minR, i)
                 else listOf(i, maxR)
             }
-            test5.size <= 2 -> {
-                return if (Hexagon(b, i).contains(test11)) listOf(minR, i)
+            intersectionOfAC.size <= 2 -> {
+                return if (Hexagon(b, i).contains(pointOfIntersectionAC)) listOf(minR, i)
                 else listOf(i, maxR)
             }
-            test6.size <= 2 -> {
-                return if (Hexagon(a, i).contains(test10)) listOf(minR, i)
+            intersectionOfBC.size <= 2 -> {
+                return if (Hexagon(a, i).contains(pointOfIntersectionBC)) listOf(minR, i)
                 else listOf(i, maxR)
             }
             else -> return listOf(i, maxR)
         }
     }
 
-    fun finalAnswer(minR: Int, maxR: Int): Hexagon? {
-        for (k in minR..maxR) {
-            hexagonOfPoints.clear()
-            for (point in hexPoints) {
-                currentHexPoint = point.move(Direction.DOWN_LEFT, k)
-                for (j in 0..5) {
-                    for (n in 0 until k) {
-                        currentHexPoint = currentHexPoint.move(Direction.values()[j], 1)
-                        hexagonOfPoints[currentHexPoint] = hexagonOfPoints.getOrPut(currentHexPoint, { 0 }) + 1
-                    }
-                }
-            }
-            if (hexagonOfPoints.containsValue(3)) {
-                for ((key, value) in hexagonOfPoints)
-                    if (value == 3) center = key
-                return Hexagon(center, center.distance(a))
-            }
-        }
-        return null
-    }
-
-    while (maxR - minR > 3) {
+    while (maxR - minR > 3) { //цикл сужения радиуса
         radius = discoveringTheRadius(minR, maxR)
         minR = radius[0]
         maxR = radius[1]
     }
 
-    return finalAnswer(minR, maxR)
+    for (k in minR..maxR) { // нахождение центра и радиуса Hexagon`а, если он есть
+        hexagonOfPoints.clear()
+        for (point in hexPoints) {
+            currentHexPoint = point.move(Direction.DOWN_LEFT, k)
+            for (j in 0..5) {
+                for (n in 0 until k) {
+                    currentHexPoint = currentHexPoint.move(Direction.values()[j], 1)
+                    hexagonOfPoints[currentHexPoint] = hexagonOfPoints.getOrPut(currentHexPoint, { 0 }) + 1
+                }
+            }
+        }
+        if (hexagonOfPoints.containsValue(3)) {
+            for ((key, value) in hexagonOfPoints)
+                if (value == 3) center = key
+            return Hexagon(center, center.distance(a))
+        }
+    }
+    return null
 }
 
 /**
