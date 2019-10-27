@@ -279,10 +279,18 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     var hexagonOfA: MutableSet<HexPoint>
     var hexagonOfB: MutableSet<HexPoint>
     var hexagonOfC: MutableSet<HexPoint>
-    val hexPoints = listOf(a, b, c)
+    var hexPoints = listOf(a, b, c).sortedBy { it.x }
+    if (a.x == b.x && a.x == c.x) hexPoints = hexPoints.sortedBy { it.y }
     var currentHexPoint: HexPoint
     var center = HexPoint(-10, -10)
     var radius: List<Int>
+    val t1 = HexSegment(hexPoints[0], hexPoints[1]).direction()
+    val t2 = HexSegment(hexPoints[0], hexPoints[2]).direction()
+    val t3 = HexSegment(hexPoints[1], hexPoints[2]).direction()
+    if (t1 == t2 && t1 == t3 && t1 != Direction.INCORRECT) {
+        center = hexPoints[0].move(Direction.values()[HexSegment(hexPoints[0], hexPoints[2]).direction().ordinal + 1], maxR)
+        return (Hexagon(center, center.distance(a)))
+    }
 
     fun circleOfHexes(
         i: Int,
