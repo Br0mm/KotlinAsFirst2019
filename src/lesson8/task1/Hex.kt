@@ -279,14 +279,15 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     var hexagonOfA: MutableSet<HexPoint>
     var hexagonOfB: MutableSet<HexPoint>
     var hexagonOfC: MutableSet<HexPoint>
-    var answer: Hexagon?
-    var flag = false
     val hexPoints = listOf(a, b, c)
     var currentHexPoint: HexPoint
     var center = HexPoint(-10, -10)
     var radius: List<Int>
 
-    fun circleOfHexes(i: Int, currentHexPoint: HexPoint): MutableSet<HexPoint> { //функция, находящая какие гексы составляют окружность
+    fun circleOfHexes(
+        i: Int,
+        currentHexPoint: HexPoint
+    ): MutableSet<HexPoint> { //функция, находящая какие гексы составляют окружность
         val hexes = mutableSetOf<HexPoint>()
         var point = currentHexPoint
         for (j in 0..5) {
@@ -318,27 +319,39 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
         hexagonOfB = circleOfHexes(i, currentHexPoint)
         currentHexPoint = c.move(Direction.DOWN_LEFT, i)
         hexagonOfC = circleOfHexes(i, currentHexPoint)
-        test1 = hexagonOfA.intersect(hexagonOfB).size
         test4 = hexagonOfA.intersect(hexagonOfB)
         test7 = a.distance(b)
-        test2 = hexagonOfA.intersect(hexagonOfC).size
         test5 = hexagonOfA.intersect(hexagonOfC)
         test8 = a.distance(c)
-        test3 = hexagonOfB.intersect(hexagonOfC).size
         test6 = hexagonOfB.intersect(hexagonOfC)
         test9 = b.distance(c)
 
-        return if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(hexagonOfC).size == 6) {
-            if (a.distance(test6.elementAt(0)) > a.distance(test6.elementAt(1))) test10 = test6.elementAt(1)
-            else test10 = test6.elementAt(0)
-            if (b.distance(test5.elementAt(0)) > b.distance(test5.elementAt(1))) test11 = test5.elementAt(1)
-            else test11 = test5.elementAt(0)
-            if (Hexagon(a, i).contains(test10) && Hexagon(b, i).contains(test11)) listOf(i - (maxR - minR) / 2, i)
-            else listOf(i, maxR)
-        } else if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(hexagonOfC).size > 6) {
-            flag = true
-            listOf(i, maxR)
-        } else listOf(i, maxR)
+
+        if (a.distance(test6.elementAt(0)) > a.distance(test6.elementAt(1))) test10 = test6.elementAt(1)
+        else test10 = test6.elementAt(0)
+        if (b.distance(test5.elementAt(0)) > b.distance(test5.elementAt(1))) test11 = test5.elementAt(1)
+        else test11 = test5.elementAt(0)
+        if (c.distance(test4.elementAt(0)) > c.distance(test4.elementAt(1))) test12 = test4.elementAt(1)
+        else test12 = test4.elementAt(0)
+        when {
+            test4.size <= 2 && test5.size <= 2 && test6.size <= 2 -> {
+                return if (Hexagon(a, i).contains(test10) && Hexagon(b, i).contains(test11) && Hexagon(c, i).contains(test12)) listOf(minR, i)
+                else listOf(i, maxR)
+            }
+            test4.size <= 2 && test5.size <= 2 && test6.size > 2 -> {
+                return if (Hexagon(b, i).contains(test11) && Hexagon(c, i).contains(test12)) listOf(minR, i)
+                else listOf(i, maxR)
+            }
+            test4.size <= 2 && test5.size > 2 && test6.size <= 2 -> {
+                return if (Hexagon(a, i).contains(test10) && Hexagon(c, i).contains(test12)) listOf(minR, i)
+                else listOf(i, maxR)
+            }
+            test4.size > 2 && test5.size <= 2 && test6.size <= 2 -> {
+                return if (Hexagon(a, i).contains(test10) && Hexagon(b, i).contains(test11)) listOf(minR, i)
+                else listOf(i, maxR)
+            }
+            else -> return listOf(i, maxR)
+        }
     }
 
     fun finalAnswer(minR: Int, maxR: Int): Hexagon? {
@@ -364,17 +377,11 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
 
     while (maxR - minR > 3) {
         radius = discoveringTheRadius(minR, maxR)
-        if (flag) break
         minR = radius[0]
         maxR = radius[1]
     }
 
-    if (flag) {
-        answer = finalAnswer(minR, minR + 17)
-        if (answer != null) return answer
-        answer = finalAnswer(maxR - 17, maxR)
-        return answer
-    } else return finalAnswer(minR, maxR)
+    return finalAnswer(minR, maxR)
 }
 
 /**
