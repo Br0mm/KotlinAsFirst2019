@@ -273,18 +273,54 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
  * Если все три точки совпадают, вернуть шестиугольник нулевого радиуса с центром в данной точке.
  */
 fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
-    val maxR = maxOf(a.distance(b), b.distance(c), a.distance(c))
-    val minR = maxOf(a.distance(b), b.distance(c), a.distance(c)) / 2
+    var maxR = maxOf(a.distance(b), b.distance(c), a.distance(c))
+    var minR = maxOf(a.distance(b), b.distance(c), a.distance(c)) / 2
     val hexagonOfPoints = mutableMapOf<HexPoint, Int>()
-    val hexPoints = listOf<HexPoint>(a, b, c)
+    var hexagonOfA: MutableSet<HexPoint>
+    var hexagonOfB: MutableSet<HexPoint>
+    var hexagonOfC: MutableSet<HexPoint>
+    val hexPoints = listOf(a, b, c)
     var currentHexPoint: HexPoint
     var center = HexPoint(-10, -10)
-    for (i in minR..maxR) {
+    var radius: List<Int>
+
+    fun circleOfHexes(i: Int, currentHexPoint: HexPoint): MutableSet<HexPoint> { //функция, находящая какие гексы составляют окружность
+        val answer = mutableSetOf<HexPoint>()
+        var point = currentHexPoint
+        for (j in 0..5) {
+            for (k in 0 until i) {
+                point = point.move(Direction.values()[j], 1)
+                answer.add(point)
+            }
+        }
+        return answer
+    }
+
+    fun discoveringTheRadius(minR: Int, maxR: Int): List<Int> { //функция, уменьшающая дистанцию между радиусами
+        val i = minR + ((maxR - minR) / 2)
+        currentHexPoint = a.move(Direction.DOWN_LEFT, i)
+        hexagonOfA = circleOfHexes(i, currentHexPoint)
+        currentHexPoint = b.move(Direction.DOWN_LEFT, i)
+        hexagonOfB = circleOfHexes(i, currentHexPoint)
+        currentHexPoint = c.move(Direction.DOWN_LEFT, i)
+        hexagonOfC = circleOfHexes(i, currentHexPoint)
+        return if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(hexagonOfC).size == 6) {
+            listOf(i - (maxR - minR) / 2, i)
+        } else listOf(i, maxR)
+    }
+
+    while (maxR - minR > 3) {
+        radius = discoveringTheRadius(minR, maxR)
+        minR = radius[0]
+        maxR = radius[1]
+    }
+
+    for (k in minR..maxR) {
         hexagonOfPoints.clear()
         for (point in hexPoints) {
-            currentHexPoint = point.move(Direction.DOWN_LEFT, i)
+            currentHexPoint = point.move(Direction.DOWN_LEFT, k)
             for (j in 0..5) {
-                for (k in 0 until i) {
+                for (n in 0 until k) {
                     currentHexPoint = currentHexPoint.move(Direction.values()[j], 1)
                     hexagonOfPoints[currentHexPoint] = hexagonOfPoints.getOrPut(currentHexPoint, { 0 }) + 1
                 }
