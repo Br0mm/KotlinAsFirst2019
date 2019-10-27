@@ -338,16 +338,28 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
                 return if (Hexagon(a, i).contains(test10) && Hexagon(b, i).contains(test11) && Hexagon(c, i).contains(test12)) listOf(minR, i)
                 else listOf(i, maxR)
             }
-            test4.size <= 2 && test5.size <= 2 && test6.size > 2 -> {
+            test4.size <= 2 && test5.size <= 2 -> {
                 return if (Hexagon(b, i).contains(test11) && Hexagon(c, i).contains(test12)) listOf(minR, i)
                 else listOf(i, maxR)
             }
-            test4.size <= 2 && test5.size > 2 && test6.size <= 2 -> {
+            test4.size <= 2&& test6.size <= 2 -> {
                 return if (Hexagon(a, i).contains(test10) && Hexagon(c, i).contains(test12)) listOf(minR, i)
                 else listOf(i, maxR)
             }
-            test4.size > 2 && test5.size <= 2 && test6.size <= 2 -> {
+            test5.size <= 2 && test6.size <= 2 -> {
                 return if (Hexagon(a, i).contains(test10) && Hexagon(b, i).contains(test11)) listOf(minR, i)
+                else listOf(i, maxR)
+            }
+            test4.size <= 2 -> {
+                return if (Hexagon(c, i).contains(test12)) listOf(minR, i)
+                else listOf(i, maxR)
+            }
+            test5.size <= 2 -> {
+                return if (Hexagon(b, i).contains(test11)) listOf(minR, i)
+                else listOf(i, maxR)
+            }
+            test6.size <= 2 -> {
+                return if (Hexagon(a, i).contains(test10)) listOf(minR, i)
                 else listOf(i, maxR)
             }
             else -> return listOf(i, maxR)
