@@ -409,7 +409,43 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
  *
  * Пример: 13, 32, 45, 18 -- шестиугольник радиусом 3 (с центром, например, в 15)
  */
-fun minContainingHexagon(vararg points: HexPoint): Hexagon = TODO()
+fun minContainingHexagon(vararg points: HexPoint): Hexagon {
+    if (points.isEmpty()) throw IllegalArgumentException()
+    if (points.size == 1) return Hexagon(points[0], 0)
+    val center: HexPoint
+    var begin = HexPoint(-1, -1)
+    var end = HexPoint(-1, -1)
+    var diameter = -1
+    var flag: Boolean
+    var testHexagon: Hexagon?
+    var minHexagon = Hexagon(HexPoint(0, 0), -1)
+    for (i in 0 until points.size - 2)
+        for (l in i + 1 until points.size - 1) {
+            if (points[i].distance(points[l]) > diameter) {
+                diameter = points[i].distance(points[l])
+                begin = points[i]
+                end = points[l]
+            }
+            for (k in l + 1 until points.size) {
+                if (points[i] == points[k] || points[l] == points[k] || points[i] == points[l]) continue
+                flag = true
+                testHexagon = hexagonByThreePoints(points[i], points[l], points[k])
+                if (testHexagon == null) continue
+                for (j in 0 until points.size) {
+                    if (!testHexagon.contains(points[j])) flag = false
+                }
+                if (flag && (testHexagon.radius < minHexagon.radius || minHexagon.radius == -1)) minHexagon = testHexagon
+            }
+        }
+    if (points[points.size - 2].distance(points[points.size - 1]) > diameter) {
+        begin = points[points.size - 2]
+        end = points[points.size - 1]
+    }
+    center = pathBetweenHexes(begin, end)[pathBetweenHexes(begin, end).size / 2]
+    testHexagon = Hexagon(center, maxOf(center.distance(begin), center.distance(end)))
+    if (testHexagon.radius < minHexagon.radius || minHexagon.radius == -1) minHexagon = testHexagon
+    return minHexagon
+}
 
 
 
