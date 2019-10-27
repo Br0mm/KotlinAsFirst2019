@@ -434,7 +434,8 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
                 for (j in 0 until points.size) {
                     if (!testHexagon.contains(points[j])) flag = false
                 }
-                if (flag && (testHexagon.radius < minHexagon.radius || minHexagon.radius == -1)) minHexagon = testHexagon
+                if (flag && (testHexagon.radius < minHexagon.radius || minHexagon.radius == -1))
+                    minHexagon = testHexagon
             }
         }
     if (points[points.size - 2].distance(points[points.size - 1]) > diameter) {
