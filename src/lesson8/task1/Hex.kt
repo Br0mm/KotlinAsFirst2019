@@ -286,19 +286,16 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     var center = HexPoint(-10, -10)
     var radius: List<Int>
 
-    fun circleOfHexes(
-        i: Int,
-        currentHexPoint: HexPoint
-    ): MutableSet<HexPoint> { //функция, находящая какие гексы составляют окружность
-        val answer = mutableSetOf<HexPoint>()
+    fun circleOfHexes(i: Int, currentHexPoint: HexPoint): MutableSet<HexPoint> { //функция, находящая какие гексы составляют окружность
+        val hexes = mutableSetOf<HexPoint>()
         var point = currentHexPoint
         for (j in 0..5) {
             for (k in 0 until i) {
                 point = point.move(Direction.values()[j], 1)
-                answer.add(point)
+                hexes.add(point)
             }
         }
-        return answer
+        return hexes
     }
 
     fun discoveringTheRadius(minR: Int, maxR: Int): List<Int> { //функция, уменьшающая дистанцию между радиусами
@@ -312,6 +309,8 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
         val test8: Int
         val test9: Int
         val test10: HexPoint
+        val test11: HexPoint
+        val test12: HexPoint
         val i = minR + ((maxR - minR) / 2)
         currentHexPoint = a.move(Direction.DOWN_LEFT, i)
         hexagonOfA = circleOfHexes(i, currentHexPoint)
@@ -329,18 +328,14 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
         test6 = hexagonOfB.intersect(hexagonOfC)
         test9 = b.distance(c)
 
-        return if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(
-                hexagonOfC
-            ).size == 6
-        ) {
+        return if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(hexagonOfC).size == 6) {
             if (a.distance(test6.elementAt(0)) > a.distance(test6.elementAt(1))) test10 = test6.elementAt(1)
             else test10 = test6.elementAt(0)
-            if (Hexagon(a, i).contains(test10)) listOf(i - (maxR - minR) / 2, i)
+            if (b.distance(test5.elementAt(0)) > b.distance(test5.elementAt(1))) test11 = test5.elementAt(1)
+            else test11 = test5.elementAt(0)
+            if (Hexagon(a, i).contains(test10) && Hexagon(b, i).contains(test11)) listOf(i - (maxR - minR) / 2, i)
             else listOf(i, maxR)
-        } else if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(
-                hexagonOfC
-            ).size > 6
-        ) {
+        } else if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(hexagonOfC).size > 6) {
             flag = true
             listOf(i, maxR)
         } else listOf(i, maxR)
@@ -369,16 +364,15 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
 
     while (maxR - minR > 3) {
         radius = discoveringTheRadius(minR, maxR)
+        if (flag) break
         minR = radius[0]
         maxR = radius[1]
     }
+
     if (flag) {
-        answer = finalAnswer(
-            maxOf(a.distance(b), b.distance(c), a.distance(c)) / 2,
-            maxOf(a.distance(b), b.distance(c), a.distance(c)) / 2 + 3
-        )
+        answer = finalAnswer(minR, minR + 17)
         if (answer != null) return answer
-        answer = finalAnswer(minR, maxR)
+        answer = finalAnswer(maxR - 17, maxR)
         return answer
     } else return finalAnswer(minR, maxR)
 }
