@@ -279,12 +279,17 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     var hexagonOfA: MutableSet<HexPoint>
     var hexagonOfB: MutableSet<HexPoint>
     var hexagonOfC: MutableSet<HexPoint>
+    var answer: Hexagon?
+    var flag = false
     val hexPoints = listOf(a, b, c)
     var currentHexPoint: HexPoint
     var center = HexPoint(-10, -10)
     var radius: List<Int>
 
-    fun circleOfHexes(i: Int, currentHexPoint: HexPoint): MutableSet<HexPoint> { //функция, находящая какие гексы составляют окружность
+    fun circleOfHexes(
+        i: Int,
+        currentHexPoint: HexPoint
+    ): MutableSet<HexPoint> { //функция, находящая какие гексы составляют окружность
         val answer = mutableSetOf<HexPoint>()
         var point = currentHexPoint
         for (j in 0..5) {
@@ -324,12 +329,42 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
         test6 = hexagonOfB.intersect(hexagonOfC)
         test9 = b.distance(c)
 
-        return if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(hexagonOfC).size == 6) {
+        return if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(
+                hexagonOfC
+            ).size == 6
+        ) {
             if (a.distance(test6.elementAt(0)) > a.distance(test6.elementAt(1))) test10 = test6.elementAt(1)
             else test10 = test6.elementAt(0)
-            if (Hexagon(a,i).contains(test10)) listOf(i - (maxR - minR) / 2, i)
+            if (Hexagon(a, i).contains(test10)) listOf(i - (maxR - minR) / 2, i)
             else listOf(i, maxR)
+        } else if (hexagonOfA.intersect(hexagonOfB).size + hexagonOfA.intersect(hexagonOfC).size + hexagonOfB.intersect(
+                hexagonOfC
+            ).size > 6
+        ) {
+            flag = true
+            listOf(i, maxR)
         } else listOf(i, maxR)
+    }
+
+    fun finalAnswer(minR: Int, maxR: Int): Hexagon? {
+        for (k in minR..maxR) {
+            hexagonOfPoints.clear()
+            for (point in hexPoints) {
+                currentHexPoint = point.move(Direction.DOWN_LEFT, k)
+                for (j in 0..5) {
+                    for (n in 0 until k) {
+                        currentHexPoint = currentHexPoint.move(Direction.values()[j], 1)
+                        hexagonOfPoints[currentHexPoint] = hexagonOfPoints.getOrPut(currentHexPoint, { 0 }) + 1
+                    }
+                }
+            }
+            if (hexagonOfPoints.containsValue(3)) {
+                for ((key, value) in hexagonOfPoints)
+                    if (value == 3) center = key
+                return Hexagon(center, center.distance(a))
+            }
+        }
+        return null
     }
 
     while (maxR - minR > 3) {
@@ -337,25 +372,15 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
         minR = radius[0]
         maxR = radius[1]
     }
-
-    for (k in minR..maxR) {
-        hexagonOfPoints.clear()
-        for (point in hexPoints) {
-            currentHexPoint = point.move(Direction.DOWN_LEFT, k)
-            for (j in 0..5) {
-                for (n in 0 until k) {
-                    currentHexPoint = currentHexPoint.move(Direction.values()[j], 1)
-                    hexagonOfPoints[currentHexPoint] = hexagonOfPoints.getOrPut(currentHexPoint, { 0 }) + 1
-                }
-            }
-        }
-        if (hexagonOfPoints.containsValue(3)) {
-            for ((key, value) in hexagonOfPoints)
-                if (value == 3) center = key
-            return Hexagon(center, center.distance(a))
-        }
-    }
-    return null
+    if (flag) {
+        answer = finalAnswer(
+            maxOf(a.distance(b), b.distance(c), a.distance(c)) / 2,
+            maxOf(a.distance(b), b.distance(c), a.distance(c)) / 2 + 3
+        )
+        if (answer != null) return answer
+        answer = finalAnswer(minR, maxR)
+        return answer
+    } else return finalAnswer(minR, maxR)
 }
 
 /**
