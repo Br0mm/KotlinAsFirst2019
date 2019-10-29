@@ -2,6 +2,7 @@
 
 package lesson8.task1
 
+import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
 import kotlin.math.*
 
 /**
@@ -337,24 +338,28 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
             else intersectionOfAB.elementAt(0)
         when {
             intersectionOfAB.size <= 2 && intersectionOfAC.size <= 2 && intersectionOfBC.size <= 2 -> {
-                return if (Hexagon(a, i).contains(pointOfIntersectionBC) && Hexagon(b, i).contains(pointOfIntersectionAC)
+                return if (Hexagon(a, i).contains(pointOfIntersectionBC)
+                    && Hexagon(b, i).contains(pointOfIntersectionAC)
                     && Hexagon(c, i).contains(pointOfIntersectionAB))
                     listOf(minR, i)
                 else listOf(i, maxR)
             }
             intersectionOfAB.size <= 2 && intersectionOfAC.size <= 2 -> {
                 return if (Hexagon(b, i).contains(pointOfIntersectionAC)
-                    && Hexagon(c, i).contains(pointOfIntersectionAB)) listOf(minR, i)
+                    && Hexagon(c, i).contains(pointOfIntersectionAB)
+                ) listOf(minR, i)
                 else listOf(i, maxR)
             }
             intersectionOfAB.size <= 2 && intersectionOfBC.size <= 2 -> {
                 return if (Hexagon(a, i).contains(pointOfIntersectionBC)
-                    && Hexagon(c, i).contains(pointOfIntersectionAB)) listOf(minR, i)
+                    && Hexagon(c, i).contains(pointOfIntersectionAB)
+                ) listOf(minR, i)
                 else listOf(i, maxR)
             }
             intersectionOfAC.size <= 2 && intersectionOfBC.size <= 2 -> {
                 return if (Hexagon(a, i).contains(pointOfIntersectionBC)
-                    && Hexagon(b, i).contains(pointOfIntersectionAC)) listOf(minR, i)
+                    && Hexagon(b, i).contains(pointOfIntersectionAC)
+                ) listOf(minR, i)
                 else listOf(i, maxR)
             }
             intersectionOfAB.size <= 2 -> {
@@ -412,40 +417,51 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
 fun minContainingHexagon(vararg points: HexPoint): Hexagon {
     if (points.isEmpty()) throw IllegalArgumentException()
     if (points.size == 1) return Hexagon(points[0], 0)
-    val center: HexPoint
-    var begin = HexPoint(-1, -1)
-    var end = HexPoint(-1, -1)
-    var diameter = -1
-    var flag: Boolean
+    var maxR = -1
+    var distanceBetweenThirdAndOther = -1
+    val begin = mutableListOf<HexPoint>()
+    val end = mutableListOf<HexPoint>()
+    val thirdPointOfHexagon = mutableListOf<HexPoint>()
+    var other = HexPoint(0, 0)
+    var answer = Hexagon(HexPoint(0, 0), -1)
     var testHexagon: Hexagon?
-    var minHexagon = Hexagon(HexPoint(0, 0), -1)
-    for (i in 0 until points.size - 2)
-        for (l in i + 1 until points.size - 1) {
-            if (points[i].distance(points[l]) > diameter) {
-                diameter = points[i].distance(points[l])
-                begin = points[i]
-                end = points[l]
+    var flag = true
+    val center: HexPoint
+    for (i in 0 until points.size - 1)
+        for (j in i + 1 until points.size) {
+            if (points[i].distance(points[j]) >= maxR) {
+                begin.clear()
+                end.clear()
+                maxR = points[i].distance(points[j])
             }
-            for (k in l + 1 until points.size) {
-                if (points[i] == points[k] || points[l] == points[k] || points[i] == points[l]) continue
-                flag = true
-                testHexagon = hexagonByThreePoints(points[i], points[l], points[k])
-                if (testHexagon == null) continue
-                for (j in 0 until points.size) {
-                    if (!testHexagon.contains(points[j])) flag = false
-                }
-                if (flag && (testHexagon.radius < minHexagon.radius || minHexagon.radius == -1))
-                    minHexagon = testHexagon
+            if (points[i].distance(points[j]) == maxR) {
+                begin.add(points[i])
+                end.add(points[j])
             }
         }
-    if (points[points.size - 2].distance(points[points.size - 1]) > diameter) {
-        begin = points[points.size - 2]
-        end = points[points.size - 1]
+    for (i in 0 until begin.size) {
+        for (point in points) {
+            if ((begin[i].distance(point) > distanceBetweenThirdAndOther || end[i].distance(point) > distanceBetweenThirdAndOther)
+                && begin[i] != point && end[i] != point
+            ) {
+                other = point
+                distanceBetweenThirdAndOther = maxOf(begin[i].distance(point), end[i].distance(point))
+            }
+        }
+        thirdPointOfHexagon.add(other)
     }
-    center = pathBetweenHexes(begin, end)[pathBetweenHexes(begin, end).size / 2]
-    testHexagon = Hexagon(center, maxOf(center.distance(begin), center.distance(end)))
-    if (testHexagon.radius < minHexagon.radius || minHexagon.radius == -1) minHexagon = testHexagon
-    return minHexagon
+    center = pathBetweenHexes(begin[0], end[0])[pathBetweenHexes(begin[0], end[0]).size / 2]
+    if (distanceBetweenThirdAndOther == -1) return Hexagon(center, maxOf(center.distance(begin[0]), center.distance(end[0])))
+    for (i in 0 until begin.size) {
+        testHexagon = hexagonByThreePoints(begin[i], end[i], thirdPointOfHexagon[i])
+        if (testHexagon == null) continue
+        for (j in 0 until points.size) {
+            if (!testHexagon.contains(points[j])) flag = false
+        }
+        if (flag && answer.radius > testHexagon.radius) answer = testHexagon
+    }
+    return if (answer.radius == -1) Hexagon(center, maxOf(center.distance(begin[0]), center.distance(end[0])))
+    else answer
 }
 
 
