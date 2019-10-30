@@ -162,7 +162,6 @@ class HexTests {
             1389,
             hexagonByThreePoints(HexPoint(-999, -558), HexPoint(-1000, -1000), HexPoint(389, -558))?.radius
         )
-
     }
 
     @Test

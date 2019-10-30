@@ -430,15 +430,9 @@ fun subMarkdownToHtmlSimple(str: String, splitter: String, openTag: String, clos
             true
         }
     }
-    if (counterOfTags % 2 == 1) {
-        a = newLine.toString()
-        newLine.clear()
-        newLine.append(a.removeSuffix(openTag))
-    } else {
-        a = newLine.toString().removeSuffix(openTag).removeSuffix(closeTag)
-        newLine.clear()
-        newLine.append(a)
-    }
+    a = newLine.toString()
+    newLine.clear()
+    newLine.append(a.removeSuffix(openTag))
     return newLine
 }
 

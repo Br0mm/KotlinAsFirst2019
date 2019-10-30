@@ -2,7 +2,6 @@
 
 package lesson8.task1
 
-import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
 import kotlin.math.*
 
 /**
