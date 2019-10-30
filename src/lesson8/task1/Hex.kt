@@ -287,6 +287,7 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     val direction1 = HexSegment(hexPoints[0], hexPoints[1]).direction()
     val direction2 = HexSegment(hexPoints[0], hexPoints[2]).direction()
     val direction3 = HexSegment(hexPoints[1], hexPoints[2]).direction()
+    if (a == b && a == c) return Hexagon(a, 0)
     if (direction1 == direction2 && direction1 == direction3 && direction1 != Direction.INCORRECT) {
         center =
             hexPoints[0].move(Direction.values()[HexSegment(hexPoints[0], hexPoints[2]).direction().ordinal + 1], maxR)

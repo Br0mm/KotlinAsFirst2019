@@ -2,7 +2,9 @@
 
 package lesson8.task2
 
+import lesson8.task3.Graph
 import kotlin.math.abs
+import kotlin.math.max
 
 /**
  * Клетка шахматной доски. Шахматная доска квадратная и имеет 8 х 8 клеток.
@@ -149,7 +151,7 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  */
 fun bishopTrajectory(start: Square, end: Square): List<Square> {
     val trajectory = mutableListOf(start)
-    val move = (abs(end.row - start.row) + abs(end.column - start.column)) / 2
+    val move = (end.row - start.row + end.column - start.column) / 2
     when (bishopMoveNumber(start, end)) {
         -1 -> return listOf()
         0 -> return trajectory
@@ -185,7 +187,11 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
  * Пример: kingMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Король может последовательно пройти через клетки (4, 2) и (5, 2) к клетке (6, 3).
  */
-fun kingMoveNumber(start: Square, end: Square): Int = TODO()
+fun kingMoveNumber(start: Square, end: Square): Int {
+    if (!start.inside() || !end.inside()) throw IllegalArgumentException()
+    if (start == end) return 0
+    return (max(abs(end.column - start.column), abs(end.row - start.row)))
+}
 
 /**
  * Сложная
@@ -201,7 +207,25 @@ fun kingMoveNumber(start: Square, end: Square): Int = TODO()
  *          kingTrajectory(Square(3, 5), Square(6, 2)) = listOf(Square(3, 5), Square(4, 4), Square(5, 3), Square(6, 2))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun kingTrajectory(start: Square, end: Square): List<Square> {
+    val trajectory = mutableListOf(start)
+    if (start == end) return trajectory
+    val columnMove = (end.column - start.column) / abs(end.column - start.column)
+    val rowMove = (end.row - start.row) / abs(end.row - start.row)
+    var position = start
+    while (position.row != end.row || position.column != end.column) {
+        position = when {
+            position.row != end.row && position.column != end.column ->
+                Square(position.column + columnMove, position.row + rowMove)
+            position.column != end.column ->
+                Square(position.column + columnMove, position.row)
+            else ->
+                Square(position.column, position.row + rowMove)
+        }
+        trajectory.add(position)
+    }
+    return trajectory
+}
 
 /**
  * Сложная
