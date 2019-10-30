@@ -151,16 +151,14 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  */
 fun bishopTrajectory(start: Square, end: Square): List<Square> {
     val trajectory = mutableListOf(start)
-    val move = (end.row - start.row + end.column - start.column) / 2
+    val move = ((end.row - start.row) - (end.column - start.column)) / 2
     when (bishopMoveNumber(start, end)) {
         -1 -> return listOf()
         0 -> return trajectory
         2 -> {
-            if (start.column + move <= 8) {
-                if (start.row + move <= 8) trajectory.add(Square(start.column + move, start.row + move))
-                else (trajectory.add(Square(start.column + move, start.row - move)))
-            } else if (start.row + move <= 8) trajectory.add(Square(start.column - move, start.row + move))
-            else trajectory.add(Square(start.column - move, start.row - move))
+            if (start.column - move in 1..8 && start.row + move in 1..8)
+                trajectory.add(Square(start.column - move, start.row + move))
+            else trajectory.add(Square(end.column + move, end.row - move))
         }
     }
     trajectory.add(end)
@@ -210,8 +208,11 @@ fun kingMoveNumber(start: Square, end: Square): Int {
 fun kingTrajectory(start: Square, end: Square): List<Square> {
     val trajectory = mutableListOf(start)
     if (start == end) return trajectory
-    val columnMove = (end.column - start.column) / abs(end.column - start.column)
-    val rowMove = (end.row - start.row) / abs(end.row - start.row)
+    val columnMove = if (end.column - start.column != 0)
+        (end.column - start.column) / abs(end.column - start.column)
+    else 0
+    val rowMove = if (end.row - start.row != 0) (end.row - start.row) / abs(end.row - start.row)
+    else 0
     var position = start
     while (position.row != end.row || position.column != end.column) {
         position = when {
@@ -250,7 +251,30 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int = TODO()
+fun knightMoveNumber(start: Square, end: Square): Int {
+    if (!start.inside() || !end.inside()) throw IllegalArgumentException()
+    if (start == end) return 0
+    var nameOfSquare: String
+    val graphOfKnightMoves = Graph()
+    for (i in 1..8)
+        for (j in 1..8) {
+            nameOfSquare = Square(j, i).notation()
+            graphOfKnightMoves.addVertex(nameOfSquare)
+        }
+    for (i in 1..8)
+        for (j in 1..8) {
+            nameOfSquare = Square(j, i).notation()
+            if (i + 2 in 1..8 && j + 1 in 1..8)
+                graphOfKnightMoves.connect(nameOfSquare, Square(j + 1, i + 2).notation())
+            if (i + 2 in 1..8 && j - 1 in 1..8)
+                graphOfKnightMoves.connect(nameOfSquare, Square(j - 1, i + 2).notation())
+            if (i + 1 in 1..8 && j + 2 in 1..8)
+                graphOfKnightMoves.connect(nameOfSquare, Square(j + 2, i + 1).notation())
+            if (i + 1 in 1..8 && j - 2 in 1..8)
+                graphOfKnightMoves.connect(nameOfSquare, Square(j - 2, i + 1).notation())
+        }
+    return graphOfKnightMoves.bfs(start = start.notation(), finish = end.notation())
+}
 
 /**
  * Очень сложная
