@@ -151,8 +151,8 @@ enum class Direction {
      * Вернуть направление, противоположное данному.
      * Для INCORRECT вернуть INCORRECT
      */
-    fun opposite(): Direction {
-        return when (ordinal) {
+    fun opposite(): Direction =
+         when (ordinal) {
             0 -> LEFT
             1 -> DOWN_LEFT
             2 -> DOWN_RIGHT
@@ -161,7 +161,6 @@ enum class Direction {
             5 -> UP_LEFT
             else -> INCORRECT
         }
-    }
 
     /**
      * Средняя
@@ -247,11 +246,9 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
         if ((to.x - x) != 0) {
             x += (to.x - x) / abs(to.x - x)
             answer.add(HexPoint(x, y))
-            continue
         } else {
             y += (to.y - y) / abs(to.y - y)
             answer.add(HexPoint(x, y))
-            continue
         }
     }
     return answer
@@ -451,7 +448,8 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         thirdPointOfHexagon.add(other)
     }
     center = pathBetweenHexes(begin[0], end[0])[pathBetweenHexes(begin[0], end[0]).size / 2]
-    if (distanceBetweenThirdAndOther == -1) return Hexagon(center, maxOf(center.distance(begin[0]), center.distance(end[0])))
+    if (distanceBetweenThirdAndOther == -1)
+        return Hexagon(center, maxOf(center.distance(begin[0]), center.distance(end[0])))
     for (i in 0 until begin.size) {
         testHexagon = hexagonByThreePoints(begin[i], end[i], thirdPointOfHexagon[i])
         if (testHexagon == null) continue

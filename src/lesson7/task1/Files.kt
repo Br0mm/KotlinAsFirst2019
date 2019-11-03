@@ -2,7 +2,6 @@
 
 package lesson7.task1
 
-import lesson4.task1.digit
 import java.io.File
 import java.lang.StringBuilder
 import kotlin.math.pow
@@ -86,7 +85,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val dictionary = setOf<Char>('ж', 'ч', 'ш', 'щ')
+    val dictionary = setOf('ж', 'ч', 'ш', 'щ')
     File(outputName).bufferedWriter().use {
         var needChange: Boolean
         for (line in File(inputName).readLines()) {
