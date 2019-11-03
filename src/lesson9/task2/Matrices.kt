@@ -118,10 +118,8 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
 
     while (counterOfNumber <= height * width) {
         counterOfNumber++
-        for (i in indent until width - indent) matrix[indent, i] = counterOfNumber
-        for (i in indent until height - indent) matrix[i, width - indent - 1] = counterOfNumber
-        for (i in width - indent - 1 downTo indent) matrix[height - indent - 1, i] = counterOfNumber
-        for (i in height - indent - 1 downTo indent) matrix[i, indent] = counterOfNumber
+        for (i in indent until height - indent)
+            for (j in indent until width - indent) matrix[i, j] = counterOfNumber
         indent++
     }
     return matrix
