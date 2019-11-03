@@ -175,7 +175,23 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    if (matrix.height != matrix.width) return false
+    val numbers = mutableSetOf<Int>()
+    for (i in 0 until matrix.height)
+        numbers.add(i + 1)
+    for (i in 0 until matrix.height) {
+        val setOfRow = mutableSetOf<Int>()
+        val setOfColumn = mutableSetOf<Int>()
+        for (j in 0 until matrix.width) {
+            setOfRow.add(matrix[i, j])
+            setOfColumn.add(matrix[j, i])
+        }
+        if (numbers.intersect(setOfRow) != numbers) return false
+        if (numbers.intersect(setOfColumn) != numbers) return false
+    }
+    return true
+}
 
 /**
  * Средняя
