@@ -290,16 +290,14 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         for ((key, value) in dictionary)
             newDictionary[key.toLowerCase()] = value.toLowerCase()
         for (line in File(inputName).readLines()) {
-            if (line.isEmpty()) {
-                if (newDictionary.containsKey('\n')) it.write(newDictionary['\n']!!)
-            }
             for (char in line) {
                 if (newDictionary.containsKey(char.toLowerCase())) {
                     if (char.isUpperCase()) it.write(newDictionary[char.toLowerCase()]!!.capitalize())
                     else it.write(newDictionary[char]!!)
                 } else it.write(char.toString())
             }
-            it.newLine()
+            if (newDictionary.containsKey('\n')) it.write(newDictionary['\n']!!)
+            else it.newLine()
         }
     }
 }

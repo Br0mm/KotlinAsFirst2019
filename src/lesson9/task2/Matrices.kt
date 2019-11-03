@@ -4,6 +4,7 @@ package lesson9.task2
 
 import lesson9.task1.Matrix
 import lesson9.task1.createMatrix
+import kotlin.math.min
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -115,8 +116,7 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
     val matrix = createMatrix(height, width, 1)
     var counterOfNumber = 1
     var indent = 1
-
-    while (counterOfNumber <= height * width) {
+    while (counterOfNumber <= min(height, width) / 2 + min(height, width) % 2) {
         counterOfNumber++
         for (i in indent until height - indent)
             for (j in indent until width - indent) matrix[i, j] = counterOfNumber
