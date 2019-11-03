@@ -68,7 +68,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     var rightIndent = 0
     var downIndent = 0
 
-    while (counterOfNumber < height * width) {
+    while (counterOfNumber <= height * width) {
         for (i in leftIndent until width - rightIndent) {
             matrix[upIndent, i] = counterOfNumber
             counterOfNumber++
