@@ -147,7 +147,6 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
     fun crossPoint(other: Line): Point {
-        if (angle - other.angle == 0.0) throw IllegalArgumentException()
         val x = (cos(angle) * other.b - cos(other.angle) * b) / sin(angle - other.angle)
         val y = (sin(other.angle) * b - sin(angle) * other.b) / sin(other.angle - angle)
         return Point(x, y)
@@ -247,6 +246,9 @@ fun minContainingCircle(vararg points: Point): Circle {
         for (l in i + 1 until points.size - 1)
             for (k in l + 1 until points.size) {
                 if (points[i] == points[k] || points[l] == points[k] || points[i] == points[l]) continue
+                if ((points[i].y == points[k].y && points[i].y == points[l].y)
+                    || (points[i].x == points[k].x && points[i].x == points[l].x)
+                ) continue
                 flag = true
                 testCircle = circleByThreePoints(points[i], points[l], points[k])
                 for (j in 0 until points.size) {
