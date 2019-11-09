@@ -438,7 +438,8 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         }
     for (i in 0 until begin.size) {
         for (point in points) {
-            if ((begin[i].distance(point) > distanceBetweenThirdAndOther || end[i].distance(point) > distanceBetweenThirdAndOther)
+            if ((begin[i].distance(point) > distanceBetweenThirdAndOther
+                        || end[i].distance(point) > distanceBetweenThirdAndOther)
                 && begin[i] != point && end[i] != point
             ) {
                 other = point

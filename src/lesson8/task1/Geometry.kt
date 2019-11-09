@@ -147,8 +147,9 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
     fun crossPoint(other: Line): Point {
+        if (angle - other.angle == 0.0) throw IllegalArgumentException()
         val x = (cos(angle) * other.b - cos(other.angle) * b) / sin(angle - other.angle)
-        val y = ((x * sin(other.angle)) + other.b) / cos(other.angle)
+        val y = (sin(other.angle) * b - sin(angle) * other.b) / sin(other.angle - angle)
         return Point(x, y)
     }
 
@@ -220,17 +221,8 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
-    var centre = bisectorByPoints(b, c).crossPoint(bisectorByPoints(a, c))
-    val firstTestRadius = centre.distance(b)
-    val secondTestRadius = centre.distance(c)
-    val thirdTestRadius = centre.distance(a)
-    var radius = maxOf(centre.distance(b), centre.distance(c), centre.distance(a))
-    if (radius !in firstTestRadius - 1..firstTestRadius + 1 || radius !in secondTestRadius - 1..firstTestRadius + 1 ||
-        radius !in thirdTestRadius - 1..thirdTestRadius + 1
-    ) {
-        centre = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
-        radius = maxOf(centre.distance(b), centre.distance(c), centre.distance(a))
-    }
+    val centre = bisectorByPoints(b, c).crossPoint(bisectorByPoints(a, c))
+    val radius = maxOf(centre.distance(b), centre.distance(c), centre.distance(a))
     return (Circle(centre, radius))
 }
 
