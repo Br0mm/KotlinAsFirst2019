@@ -170,9 +170,7 @@ class Line private constructor(val b: Double, val angle: Double) {
  */
 fun lineBySegment(s: Segment): Line {
     var angle = atan((s.end.y - s.begin.y) / (s.end.x - s.begin.x))
-    if (angle > PI) angle -= PI
     if (angle < 0.0) angle += PI
-    if (angle == PI) angle -= PI
     return Line(s.begin, angle)
 }
 
@@ -191,9 +189,8 @@ fun lineByPoints(a: Point, b: Point): Line = lineBySegment(Segment(a, b))
 fun bisectorByPoints(a: Point, b: Point): Line {
     val centre = Point((b.x + a.x) / 2, (b.y + a.y) / 2)
     var angle = atan((a.y - b.y) / (a.x - b.x))
-    if (angle >= PI / 2) angle -= PI / 2
+    if (angle == PI / 2) angle -= PI / 2
     else angle += PI / 2
-    if (angle == PI) angle -= PI
     return Line(centre, angle)
 }
 
