@@ -192,6 +192,7 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     var angle = atan((a.y - b.y) / (a.x - b.x))
     if (angle == PI / 2) angle -= PI / 2
     else angle += PI / 2
+    if (angle == PI) angle -= PI
     return Line(centre, angle)
 }
 
