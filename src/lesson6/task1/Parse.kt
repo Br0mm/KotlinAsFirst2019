@@ -165,7 +165,7 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (!"$jumps ".matches(Regex("""^(\d+\s|%\s?|-\s?|\+\s?)*$"""))) return -1
+    if (!"$jumps ".matches(Regex("""^(\d+\s([+\-%])+\s)*"""))) return -1
     val parts = Regex("""[ ]""").split(jumps)
     var max = -1
     for (i in 0 until parts.size - 1) {
