@@ -393,47 +393,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val outputFile = File(outputName).bufferedWriter()
-    outputFile.write("<html>\n<body>\n<p>\n")
-    val str = StringBuilder()
-    val newLine = StringBuilder()
-    for (line in File(inputName).readLines()) {
-        str.append(line)
-        str.append("\n")
-    }
-    newLine.append(subMarkdownToHtmlSimple(str.toString().removeSuffix("\n"), "~~", "<s>", "</s>"))
-    str.clear()
-    str.append(subMarkdownToHtmlSimple(newLine.toString(), "**", "<b>", "</b>"))
-    newLine.clear()
-    newLine.append(subMarkdownToHtmlSimple(str.toString(), "*", "<i>", "</i>"))
-    for (line in newLine.split("\n")) {
-        if (line.isEmpty()) outputFile.write("\n</p>\n<p>\n")
-        outputFile.write(line)
-    }
-    outputFile.write("\n</p>\n</body>\n</html>")
-    outputFile.close()
-}
-
-fun subMarkdownToHtmlSimple(str: String, splitter: String, openTag: String, closeTag: String): StringBuilder {
-    val newLine = StringBuilder()
-    var counterOfTags = 0
-    var flagOfTag = true
-    val a: String
-    for (line in str.split(splitter)) {
-        newLine.append(line)
-        counterOfTags++
-        flagOfTag = if (flagOfTag) {
-            newLine.append(openTag)
-            false
-        } else {
-            newLine.append(closeTag)
-            true
-        }
-    }
-    a = newLine.toString()
-    newLine.clear()
-    newLine.append(a.removeSuffix(openTag))
-    return newLine
+    TODO()
 }
 
 /**
