@@ -396,8 +396,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val outputFile = File(outputName).bufferedWriter()
     outputFile.write("<html>\n<body>\n<p>\n")
     val str = StringBuilder()
+    val input = File(inputName).readLines()
     val newLine = StringBuilder()
-    for (line in File(inputName).readLines()) {
+    for ((index, line) in input.withIndex()) {
+        if ((index == 0 || input[index - 1].isEmpty()) && line.isEmpty()) continue
         str.append(line)
         str.append("\n")
     }
