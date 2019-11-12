@@ -2,6 +2,7 @@
 
 package lesson8.task2
 
+import lesson8.task1.move
 import lesson8.task3.Graph
 import kotlin.math.abs
 import kotlin.math.max
@@ -209,9 +210,9 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
     val trajectory = mutableListOf(start)
     if (start == end) return trajectory
     val columnMove = if (end.column - start.column != 0)
-        (end.column - start.column) / abs(end.column - start.column)
+        move(end.column, start.column)
     else 0
-    val rowMove = if (end.row - start.row != 0) (end.row - start.row) / abs(end.row - start.row)
+    val rowMove = if (end.row - start.row != 0) move(end.row, start.row)
     else 0
     var position = start
     while (position.row != end.row || position.column != end.column) {

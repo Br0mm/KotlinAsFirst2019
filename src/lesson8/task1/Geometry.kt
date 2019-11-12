@@ -147,6 +147,7 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
     fun crossPoint(other: Line): Point {
+        if (angle == other.angle) return Point(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY)
         val x = (cos(angle) * other.b - cos(other.angle) * b) / sin(angle - other.angle)
         val y = (sin(other.angle) * b - sin(angle) * other.b) / sin(other.angle - angle)
         return Point(x, y)
@@ -169,6 +170,7 @@ class Line private constructor(val b: Double, val angle: Double) {
  * Построить прямую по отрезку
  */
 fun lineBySegment(s: Segment): Line {
+    if (s.begin == s.end) throw IllegalArgumentException()
     var angle = atan((s.end.y - s.begin.y) / (s.end.x - s.begin.x))
     if (angle < 0.0) angle += PI
     if (angle == PI) angle -= PI

@@ -152,7 +152,7 @@ enum class Direction {
      * Для INCORRECT вернуть INCORRECT
      */
     fun opposite(): Direction =
-         when (ordinal) {
+        when (ordinal) {
             0 -> LEFT
             1 -> DOWN_LEFT
             2 -> DOWN_RIGHT
@@ -238,21 +238,23 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
     val answer = mutableListOf(from)
     while (x != to.x || y != to.y) {
         if (((to.x - x) > 0 && (to.y - y) < 0) || ((to.x - x) < 0 && (to.y - y) > 0)) {
-            x += (to.x - x) / abs(to.x - x)
-            y += (to.y - y) / abs(to.y - y)
+            x += move(to.x, x)
+            y += move(to.y, y)
             answer.add(HexPoint(x, y))
             continue
         }
         if ((to.x - x) != 0) {
-            x += (to.x - x) / abs(to.x - x)
+            x += 1
             answer.add(HexPoint(x, y))
         } else {
-            y += (to.y - y) / abs(to.y - y)
+            y += 1
             answer.add(HexPoint(x, y))
         }
     }
     return answer
 }
+
+fun move(end: Int, start: Int): Int = (end - start) / abs(end - start)
 
 /**
  * Очень сложная
@@ -337,7 +339,8 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
             intersectionOfAB.size <= 2 && intersectionOfAC.size <= 2 && intersectionOfBC.size <= 2 -> {
                 return if (Hexagon(a, i).contains(pointOfIntersectionBC)
                     && Hexagon(b, i).contains(pointOfIntersectionAC)
-                    && Hexagon(c, i).contains(pointOfIntersectionAB))
+                    && Hexagon(c, i).contains(pointOfIntersectionAB)
+                )
                     listOf(minR, i)
                 else listOf(i, maxR)
             }
