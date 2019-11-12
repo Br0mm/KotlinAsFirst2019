@@ -400,7 +400,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val newLine = StringBuilder()
     for ((index, line) in input.withIndex()) {
         str.append(line)
-        if (index < input.size - 1 && input[index + 1].isNotEmpty()) str.append("\n")
+        if (line.isNotEmpty() || (index < input.size - 1 && input[index + 1].isNotEmpty())) str.append("\n")
     }
     newLine.append(subMarkdownToHtmlSimple(str.toString().removeSuffix("\n"), "~~", "<s>", "</s>"))
     str.clear()
@@ -436,6 +436,7 @@ fun subMarkdownToHtmlSimple(str: String, splitter: String, openTag: String, clos
     newLine.append(a.removeSuffix(openTag))
     return newLine
 }
+
 
 /**
  * Сложная
