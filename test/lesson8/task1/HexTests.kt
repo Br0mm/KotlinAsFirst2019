@@ -114,6 +114,9 @@ class HexTests {
                 HexPoint(y = 5, x = 3)
             ), pathBetweenHexes(HexPoint(y = 2, x = 2), HexPoint(y = 5, x = 3))
         )
+        assertEquals(
+            443, pathBetweenHexes(HexPoint(y = -557, x = -561), HexPoint(y = -999, x = -557)).size
+        )
     }
 
     @Test

@@ -409,7 +409,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     newLine.clear()
     newLine.append(subMarkdownToHtmlSimple(str.toString(), "*", "<i>", "</i>"))
     for (line in newLine.split("\n")) {
-        if (line.isEmpty()) outputFile.write("\n</p>\n<p>\n")
+        if (line.isEmpty() && newLine.split("\n").size != 1) outputFile.write("\n</p>\n<p>\n")
         outputFile.write(line)
     }
     outputFile.write("\n</p>\n</body>\n</html>")

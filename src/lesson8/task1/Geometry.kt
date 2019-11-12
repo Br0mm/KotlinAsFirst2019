@@ -135,7 +135,7 @@ fun circleByDiameter(diameter: Segment): Circle {
  */
 class Line private constructor(val b: Double, val angle: Double) {
     init {
-        require(angle >= 0 && angle < PI) { "Incorrect line angle: $angle" }
+        require(angle >= 0 && angle <= PI) { "Incorrect line angle: $angle" }
     }
 
     constructor(point: Point, angle: Double) : this(point.y * cos(angle) - point.x * sin(angle), angle)
@@ -173,7 +173,6 @@ fun lineBySegment(s: Segment): Line {
     if (s.begin == s.end) throw IllegalArgumentException()
     var angle = atan((s.end.y - s.begin.y) / (s.end.x - s.begin.x))
     if (angle < 0.0) angle += PI
-    if (angle == PI) angle -= PI
     return Line(s.begin, angle)
 }
 
@@ -194,7 +193,6 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     var angle = atan((a.y - b.y) / (a.x - b.x))
     if (angle == PI / 2) angle -= PI / 2
     else angle += PI / 2
-    if (angle == PI) angle -= PI
     return Line(centre, angle)
 }
 

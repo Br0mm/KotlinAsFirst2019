@@ -244,10 +244,10 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
             continue
         }
         if ((to.x - x) != 0) {
-            x += 1
+            x += move(to.x, x)
             answer.add(HexPoint(x, y))
         } else {
-            y += 1
+            y += move(to.y, y)
             answer.add(HexPoint(x, y))
         }
     }
