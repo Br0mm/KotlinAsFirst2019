@@ -135,7 +135,7 @@ fun circleByDiameter(diameter: Segment): Circle {
  */
 class Line private constructor(val b: Double, val angle: Double) {
     init {
-        require(angle >= 0 && angle <= PI) { "Incorrect line angle: $angle" }
+        require(angle in 0.0..PI) { "Incorrect line angle: $angle" }
     }
 
     constructor(point: Point, angle: Double) : this(point.y * cos(angle) - point.x * sin(angle), angle)
