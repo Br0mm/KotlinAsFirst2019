@@ -426,7 +426,7 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
     var answer = Hexagon(HexPoint(0, 0), -1)
     var testHexagon: Hexagon?
     var flag = true
-    val center: HexPoint
+    var center: HexPoint
     for (i in 0 until points.size - 1)
         for (j in i + 1 until points.size) {
             if (points[i].distance(points[j]) >= maxR) {
@@ -460,7 +460,10 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
         for (j in 0 until points.size) {
             if (!testHexagon.contains(points[j])) flag = false
         }
-        if (flag && answer.radius > testHexagon.radius) answer = testHexagon
+        if (flag && answer.radius > testHexagon.radius) {
+            answer = testHexagon
+            center = pathBetweenHexes(begin[i], end[i])[pathBetweenHexes(begin[i], end[i]).size / 2]
+        }
     }
     return if (answer.radius == -1) Hexagon(center, maxOf(center.distance(begin[0]), center.distance(end[0])))
     else answer
