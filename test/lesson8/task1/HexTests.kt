@@ -174,6 +174,18 @@ class HexTests {
         val result = minContainingHexagon(*points)
         assertEquals(3, result.radius)
         assertTrue(points.all { result.contains(it) })
+        val points1 = arrayOf(HexPoint(-557, -557), HexPoint(815, 94), HexPoint(-414, -662), HexPoint(157, 486)
+            , HexPoint(-1000, -317), HexPoint(-999, -557), HexPoint(-1000, -584), HexPoint(-999, -74), HexPoint(-999, -1000), HexPoint(-999,-558)
+            , HexPoint(-557,-999), HexPoint(-999,-599), HexPoint(791,-745), HexPoint(-835,-558)
+            , HexPoint(-58, -557), HexPoint(-999, 387), HexPoint(758, -999), HexPoint(-557, -999), HexPoint(-557, -1000)
+            , HexPoint(552, -557), HexPoint(-890, 144), HexPoint(-579, 473), HexPoint(901, -744), HexPoint(-558, -372), HexPoint(608, -557)
+            , HexPoint(421, -124), HexPoint(-184, 439), HexPoint(-557, -999), HexPoint(-374, -1000), HexPoint(-1000, -999), HexPoint(460, -25)
+            , HexPoint(-1000, -1000), HexPoint(-999, -1000) , HexPoint(-757, 86) , HexPoint(491, 431), HexPoint(-558, -999)
+            , HexPoint(-570, -171), HexPoint(-1000, 65), HexPoint(-1000, 117), HexPoint(208, 501), HexPoint(-557, -999)
+            , HexPoint(-557, -12), HexPoint(486, 891), HexPoint(245, -1000), HexPoint(-557, -945), HexPoint(533, 884))
+        val result1 = minContainingHexagon(*points1)
+        assertEquals(1709, result1.radius)
+        assertTrue(points1.all { result1.contains(it) })
     }
 
 }
