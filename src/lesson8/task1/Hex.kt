@@ -419,8 +419,8 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
     if (points.isEmpty()) throw IllegalArgumentException()
     if (points.size == 1) return Hexagon(points[0], 0)
     var diameter = -1
-    val begin = mutableListOf<HexPoint>()
-    val end = mutableListOf<HexPoint>()
+    var begin = HexPoint(0, 0)
+    var end = HexPoint(0, 0)
     var currentHexPoint: HexPoint
     val answer = Hexagon(HexPoint(0, 0), -1)
     var flag: Boolean
@@ -428,17 +428,13 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
     for (i in 0 until points.size - 1)
         for (j in i + 1 until points.size) {
             if (points[i].distance(points[j]) > diameter) {
-                begin.clear()
-                end.clear()
+                begin = points[i]
+                end = points[j]
                 diameter = points[i].distance(points[j])
             }
-            if (points[i].distance(points[j]) == diameter) {
-                begin.add(points[i])
-                end.add(points[j])
-            }
         }
-    center = pathBetweenHexes(begin[0], end[0])[pathBetweenHexes(begin[0], end[0]).size / 2]
-    val radius = max(center.distance(begin[0]), center.distance(end[0]))
+    center = pathBetweenHexes(begin, end)[pathBetweenHexes(begin, end).size / 2]
+    val radius = max(center.distance(begin), center.distance(end))
     for (i in radius..radius * 2) {
         for (point in points) {
             currentHexPoint = point.move(Direction.DOWN_LEFT, i)
