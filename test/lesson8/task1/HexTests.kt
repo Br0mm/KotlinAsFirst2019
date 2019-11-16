@@ -186,6 +186,11 @@ class HexTests {
         val result1 = minContainingHexagon(*points1)
         assertEquals(1709, result1.radius)
         assertTrue(points1.all { result1.contains(it) })
+        val points2 = arrayOf(HexPoint(-557, -558), HexPoint(-558, -999), HexPoint(613, -558), HexPoint(-97, -557)
+            , HexPoint(-558, 719), HexPoint(731, -557))
+        val result2 = minContainingHexagon(*points2)
+        assertEquals(1003, result2.radius)
+        assertTrue(points2.all { result2.contains(it) })
     }
 
 }

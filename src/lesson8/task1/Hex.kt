@@ -419,17 +419,12 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
     if (points.isEmpty()) throw IllegalArgumentException()
     if (points.size == 1) return Hexagon(points[0], 0)
     var diameter = -1
-    var distanceBetweenThirdAndOther = -1
     val begin = mutableListOf<HexPoint>()
     val end = mutableListOf<HexPoint>()
-    val thirdPointOfHexagon = mutableListOf<HexPoint>()
     var currentHexPoint: HexPoint
-    val beginAndEnd = mutableListOf<HexPoint>()
-    val other = mutableListOf<HexPoint>()
-    var answer = Hexagon(HexPoint(0, 0), -1)
-    var testHexagon: Hexagon?
-    var flag = true
-    var center: HexPoint
+    val answer = Hexagon(HexPoint(0, 0), -1)
+    var flag: Boolean
+    val center: HexPoint
     for (i in 0 until points.size - 1)
         for (j in i + 1 until points.size) {
             if (points[i].distance(points[j]) > diameter) {
@@ -442,57 +437,25 @@ fun minContainingHexagon(vararg points: HexPoint): Hexagon {
                 end.add(points[j])
             }
         }
-    for (i in 0 until begin.size) {
-        for (point in points) {
-            if (begin[i].distance(point) + end[i].distance(point) > distanceBetweenThirdAndOther
-                && begin[i] != point && end[i] != point
-            ) {
-                other.clear()
-                distanceBetweenThirdAndOther = begin[i].distance(point) + end[i].distance(point)
-            }
-            if (begin[i].distance(point) + end[i].distance(point) == distanceBetweenThirdAndOther
-                && begin[i] != point && end[i] != point
-            ) other.add(point)
-        }
-        thirdPointOfHexagon.addAll(other)
-        other.clear()
-        distanceBetweenThirdAndOther = 0
-    }
     center = pathBetweenHexes(begin[0], end[0])[pathBetweenHexes(begin[0], end[0]).size / 2]
-    if (distanceBetweenThirdAndOther == -1)
-        return Hexagon(center, maxOf(center.distance(begin[0]), center.distance(end[0])))
-    for (i in 0 until begin.size) {
-        for (j in 0 until thirdPointOfHexagon.size) {
-            testHexagon = hexagonByThreePoints(begin[i], end[i], thirdPointOfHexagon[j])
-            if (testHexagon == null) continue
-            for (k in 0 until points.size) {
-                if (!testHexagon.contains(points[k])) flag = false
-            }
-            if (flag && answer.radius > testHexagon.radius) {
-                answer = testHexagon
-                center = pathBetweenHexes(begin[i], end[i])[pathBetweenHexes(begin[i], end[i]).size / 2]
-            }
-        }
-    }
-    beginAndEnd.add(begin[0])
-    beginAndEnd.add(end[0])
     val radius = max(center.distance(begin[0]), center.distance(end[0]))
-    if (answer.radius == -1)
-        for (i in 0 until 2) {
-            currentHexPoint = beginAndEnd[i].move(Direction.DOWN_LEFT, radius)
+    for (i in radius..radius * 2) {
+        for (point in points) {
+            currentHexPoint = point.move(Direction.DOWN_LEFT, i)
             for (j in 0..5) {
-                for (n in 0 until radius) {
+                for (n in 0 until i) {
                     flag = true
                     currentHexPoint = currentHexPoint.move(Direction.values()[j], 1)
                     for (k in 0 until points.size) {
-                        if (currentHexPoint.distance(points[k]) > radius) flag = false
+                        if (currentHexPoint.distance(points[k]) > i) flag = false
                     }
-                    if (flag) return Hexagon(currentHexPoint, radius)
+                    if (flag) return Hexagon(currentHexPoint, i)
                 }
             }
+
         }
-    return if (answer.radius == -1) Hexagon(center, maxOf(center.distance(begin[0]), center.distance(end[0])))
-    else answer
+    }
+    return answer
 }
 
 
