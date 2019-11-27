@@ -64,36 +64,31 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
 fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     val matrix = createMatrix(height, width, 1)
     var counterOfNumber = 1
-    var leftIndent = 0
-    var upIndent = 0
-    var rightIndent = 0
-    var downIndent = 0
+    var mainIndent = 0
+    // вспомогательная функция, для заполнение строк и столбцов спирали правильными цифрами
+    fun spiral(begin: Int, end: Int, horizontally: Boolean, subIndent: Int, fromBeginToEnd: Boolean) {
+        for (i in begin until end) {
+            when {
+                horizontally && fromBeginToEnd -> matrix[subIndent, i] = counterOfNumber
+                !horizontally && fromBeginToEnd -> matrix[i, subIndent] = counterOfNumber
+                horizontally && !fromBeginToEnd -> matrix[subIndent, end - i + begin - 1] = counterOfNumber
+                !horizontally && !fromBeginToEnd -> matrix[end - i + begin - 1, subIndent] = counterOfNumber
+            }
+            counterOfNumber++
+        }
+    }
 
     while (counterOfNumber <= height * width) {
-        for (i in leftIndent until width - rightIndent) {
-            matrix[upIndent, i] = counterOfNumber
-            counterOfNumber++
+        for (j in 0..3) { // смотрю какая строка или столбец должен заполняться
+            when (j) {
+                0 -> spiral(mainIndent, width - mainIndent, true, mainIndent, true)
+                1 -> spiral(mainIndent + 1, height - mainIndent, false, width - mainIndent - 1, true)
+                2 -> spiral(mainIndent, width - mainIndent - 1, true, height - mainIndent - 1, false)
+                3 -> spiral(mainIndent + 1, height - mainIndent - 1, false, mainIndent, false)
+            }
+            if (counterOfNumber > height * width) break
         }
-        upIndent++
-        if (counterOfNumber > height * width) break
-        for (i in upIndent until height - downIndent) {
-            matrix[i, width - rightIndent - 1] = counterOfNumber
-            counterOfNumber++
-        }
-        rightIndent++
-        if (counterOfNumber > height * width) break
-        for (i in width - rightIndent - 1 downTo leftIndent) {
-            matrix[height - downIndent - 1, i] = counterOfNumber
-            counterOfNumber++
-        }
-        downIndent++
-        if (counterOfNumber > height * width) break
-        for (i in height - downIndent - 1 downTo upIndent) {
-            matrix[i, leftIndent] = counterOfNumber
-            counterOfNumber++
-        }
-        leftIndent++
-        if (counterOfNumber > height * width) break
+        mainIndent++
     }
     return matrix
 }
