@@ -102,7 +102,6 @@ fun sibilants(inputName: String, outputName: String) {
                         'ю' -> 'у'
                         else -> char
                     }
-                    needChange = false
                 }
                 needChange = dictionary.contains(char.toLowerCase())
                 it.write("$str")
@@ -289,15 +288,11 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     File(outputName).bufferedWriter().use {
         for ((key, value) in dictionary)
             newDictionary[key.toLowerCase()] = value.toLowerCase()
-        for ((index, line) in File(inputName).readLines().withIndex()) {
-            for (char in line) {
-                if (newDictionary.containsKey(char.toLowerCase())) {
-                    if (char.isUpperCase()) it.write(newDictionary[char.toLowerCase()]!!.capitalize())
-                    else it.write(newDictionary[char]!!)
-                } else it.write(char.toString())
-            }
-            if (newDictionary.containsKey('\n') && index != File(inputName).readLines().size - 1) it.write(newDictionary['\n']!!)
-            else it.newLine()
+        for (char in File(inputName).readText()) {
+            if (newDictionary.containsKey(char.toLowerCase())) {
+                if (char.isUpperCase()) it.write(newDictionary[char.toLowerCase()]!!.capitalize())
+                else it.write(newDictionary[char]!!)
+            } else it.write(char.toString())
         }
     }
 }
