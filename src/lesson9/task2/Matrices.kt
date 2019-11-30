@@ -77,6 +77,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
             counterOfNumber++
         }
     }
+
     while (counterOfNumber <= height * width) {
         for (j in 0..3) { // смотрю какая строка или столбец должен заполняться
             when (j) {
