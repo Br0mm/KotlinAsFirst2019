@@ -86,7 +86,7 @@ data class Circle(val center: Point, val radius: Double) {
      *
      * Вернуть true, если и только если окружность содержит данную точку НА себе или ВНУТРИ себя
      */
-    fun contains(p: Point): Boolean = center.distance(p) <= radius
+    fun contains(p: Point): Boolean = center.distance(p) - radius <= 1e-6
 }
 
 /**
@@ -240,7 +240,6 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
 fun minContainingCircle(vararg points: Point): Circle {
     if (points.isEmpty()) throw IllegalArgumentException()
     if (points.size == 1) return Circle(points[0], 0.0)
-    val maxDiameter = diameter(*points)
     var flag: Boolean
     var testCircle: Circle
     var minCircle = Circle(Point(0.0, 0.0), -1.0)
@@ -254,15 +253,13 @@ fun minContainingCircle(vararg points: Point): Circle {
                 flag = true
                 testCircle = circleByThreePoints(points[i], points[l], points[k])
                 for (j in 0 until points.size) {
-                    if (j == i || j == l || j == k) continue
                     if (!testCircle.contains(points[j])) flag = false
                 }
                 if (flag && (testCircle.radius < minCircle.radius || minCircle.radius == -1.0)) minCircle = testCircle
             }
-    testCircle = circleByDiameter(maxDiameter)
+    testCircle = circleByDiameter(diameter(*points))
     flag = true
     for (j in 0 until points.size) {
-        if (points[j] == maxDiameter.begin || points[j] == maxDiameter.end) continue
         if (!testCircle.contains(points[j])) flag = false
     }
     if (flag && (testCircle.radius < minCircle.radius || minCircle.radius == -1.0)) minCircle = testCircle
